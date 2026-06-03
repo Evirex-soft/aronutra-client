@@ -274,10 +274,10 @@ const NavBar = () => {
                 </Link>
               </div>
             ))}
-            {/* Highlighter with Glow */}
+            {/* Highlighter */}
             <div
               ref={highlighterRef}
-              className="absolute -bottom-2 left-0 h-1 bg-primary pointer-events-none rounded-full hidden lg:block shadow-[0_0_15px_rgba(197,255,74,0.5)]"
+              className="absolute -bottom-2 left-0 h-1 bg-primary pointer-events-none rounded-full hidden lg:block"
             />
           </div>
         </div>

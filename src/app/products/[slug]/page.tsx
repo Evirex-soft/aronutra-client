@@ -55,13 +55,13 @@ export default async function ProductDetailPage({
 
           {/* LEFT: IMAGE GALLERY */}
           <div className="lg:col-span-7 space-y-8">
-            <div className="relative aspect-square w-full rounded-[3rem] bg-white overflow-hidden flex items-center justify-center shadow-2xl">
+            <div className="relative aspect-[4/3] w-full rounded-[2rem] bg-white overflow-hidden flex items-center justify-center shadow-2xl">
               <Image
                 src={product.images?.[0] || "/placeholder.png"}
                 alt={product.name}
-                width={600}
-                height={600}
-                className="relative z-10 object-contain p-12"
+                width={1000}
+                height={1000}
+                className="relative z-10 object-contain p-2 w-full h-full"
                 priority
               />
               <div className="absolute top-10 left-10">
