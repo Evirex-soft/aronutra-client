@@ -57,21 +57,21 @@ const FeatureStrip: React.FC = () => {
   }, []);
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       className="bg-white border-y border-stone-200/50 py-12 px-6 sm:px-10 lg:px-16"
     >
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-8">
         {features.map((feat, i) => (
-          <div 
-            key={i} 
+          <div
+            key={i}
             className="feature-item flex items-start gap-4 transition-all duration-300 hover:translate-y-[-2px] group"
           >
             <div className="p-3 bg-stone-50 rounded-full border border-stone-100 group-hover:bg-primary/5 group-hover:border-primary/20 transition-all duration-300">
               {feat.icon}
             </div>
             <div className="space-y-1 text-left">
-              <h4 className="font-serif text-[15px] font-bold text-stone-900 leading-none">
+              <h4 className="font-medium text-[15px] font-bold text-stone-900 leading-none">
                 {feat.title}
               </h4>
               <p className="font-sans text-stone-500 text-[12.5px] leading-snug">

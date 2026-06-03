@@ -60,7 +60,7 @@ const FinalCTA: React.FC = () => {
         {/* Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-4 pt-4 font-sans">
           <a
-            href="#products"
+            href="/collection"
             className="
               rounded-full
               px-9 py-4
