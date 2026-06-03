@@ -1,4 +1,4 @@
-import { IProduct } from "../../types/product";
+import { IProduct } from "@/types/product";
 import { getAllProducts, findProductBySlug } from "./data";
 
 

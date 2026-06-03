@@ -74,7 +74,7 @@ const FAQ: React.FC = () => {
                       <span className="font-sans text-[10px] font-bold text-[#d4af37] opacity-40 group-hover:opacity-100 transition-opacity">
                         0{i + 1}
                       </span>
-                      <h3 className={`font-serif text-2xl md:text-3xl lg:text-4xl leading-none tracking-tight transition-colors duration-500 ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                      <h3 className={`font-medium text-2xl md:text-3xl lg:text-4xl leading-none tracking-tight transition-colors duration-500 ${isActive ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
                         {faq.question}
                       </h3>
                     </div>

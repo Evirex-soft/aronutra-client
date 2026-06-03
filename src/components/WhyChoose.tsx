@@ -136,7 +136,7 @@ const WhyChoose: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="font-serif text-xl sm:text-2xl text-white tracking-tight leading-tight group-hover:text-[#d4af37] transition-colors">
+                <h3 className="font-medium text-xl sm:text-2xl text-white tracking-tight leading-tight group-hover:text-[#d4af37] transition-colors">
                   {f.title}
                 </h3>
                 <p className="font-sans text-[13px] sm:text-[14px] text-stone-400 leading-relaxed font-light">

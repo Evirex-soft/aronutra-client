@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
-import { IProduct } from "../../../types/product";
+import { IProduct } from "@/types/product";
 import { toast } from "react-toastify";
-import { STORAGE_KEYS } from "../../constants/storage";
+import { STORAGE_KEYS } from "@/constants/storage";
 
 export interface CartItem extends IProduct {
     quantity: number;

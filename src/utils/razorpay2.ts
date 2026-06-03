@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { SavedCheckout } from "../../types/checkout";
+import { SavedCheckout } from "@/types/checkout";
 
 
 

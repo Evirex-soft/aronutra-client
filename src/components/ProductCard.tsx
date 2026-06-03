@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, MouseEvent } from "react";
-import { IProduct } from "../../types/product";
+import { IProduct } from "@/types/product";
 import { useWishlist } from "@/app/contexts/WishlistContext";
 import { useCart } from "@/app/contexts/CartContext";
 import Link from "next/link";

@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useWishlist } from "../contexts/WishlistContext";
-import { IProduct } from "../../../types/product";
+import { useWishlist } from "@/app/contexts/WishlistContext";
+import { IProduct } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
 import Link from "next/link";
 import { Heart, ArrowRight } from "lucide-react";

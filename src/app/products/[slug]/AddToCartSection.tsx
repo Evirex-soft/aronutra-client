@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
-import { IProduct } from "@/../types/product";
+import { IProduct } from "@/types/product";
 import Continue from "./Continue";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";

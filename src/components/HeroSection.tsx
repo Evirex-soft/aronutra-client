@@ -13,12 +13,12 @@ const HeroSection = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const bgImageRef = useRef<HTMLDivElement | null>(null);
+  const bgImageMobileRef = useRef<HTMLDivElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
-    // Subtle movement for classic feel
     const x = (clientX / innerWidth - 0.5) * 15;
     const y = (clientY / innerHeight - 0.5) * 15;
     setMousePos({ x, y });
@@ -28,28 +28,26 @@ const HeroSection = () => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
 
-      // 1. Initial Scale & Fade for Background (Ken Burns effect)
-      tl.fromTo(bgImageRef.current,
+      // Animate both images (mobile and desktop containers)
+      tl.fromTo([bgImageRef.current, bgImageMobileRef.current],
         { scale: 1.15, opacity: 0 },
         { scale: 1, opacity: 1, duration: 2.5, ease: "power2.out" }
       );
 
-      // 2. Editorial Masked Reveal for H1
       tl.fromTo(".hero-mask-line",
         { y: "100%" },
         { y: "0%", duration: 1.5, stagger: 0.15, ease: "expo.out" },
         "-=1.8"
       );
 
-      // 3. Smooth Fade for Subtext and Buttons
       tl.fromTo(".hero-classic-fade",
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 1.2, stagger: 0.1 },
         "-=1"
       );
 
-      // 4. Parallax Scroll Effect
-      gsap.to(bgImageRef.current, {
+      // Parallax for both
+      gsap.to([bgImageRef.current, bgImageMobileRef.current], {
         yPercent: 15,
         ease: "none",
         scrollTrigger: {
@@ -60,7 +58,6 @@ const HeroSection = () => {
         }
       });
 
-      // 5. Fade content out on scroll
       gsap.to(contentRef.current, {
         opacity: 0,
         y: -50,
@@ -80,10 +77,10 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative h-screen w-full overflow-hidden bg-[#052c22] flex items-center"
+      className="relative min-h-screen lg:h-screen w-full overflow-hidden bg-[#052c22] flex items-center pt-32 pb-24 md:pt-0 md:pb-0"
     >
-      {/* BACKGROUND IMAGE - Ken Burns & Parallax */}
-      <div ref={bgImageRef} className="absolute inset-0 z-0">
+      {/* DESKTOP BACKGROUND IMAGE */}
+      <div ref={bgImageRef} className="absolute inset-0 z-0 hidden md:block">
         <Image
           src="/images/hero.png"
           alt="Premium Honey Background"
@@ -92,17 +89,29 @@ const HeroSection = () => {
           sizes="100vw"
           className="object-cover object-center brightness-[0.7] contrast-[1.05]"
         />
-
-        {/* <div className="absolute inset-0 bg-gradient-to-b from-[#052c22]/60 via-transparent to-[#052c22]/80" /> */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,44,34,0.4)_100%)]" />
       </div>
+
+      {/* MOBILE BACKGROUND IMAGE */}
+      <div ref={bgImageMobileRef} className="absolute inset-0 z-0 block md:hidden">
+        <Image
+          src="/images/mobile.png"
+          alt="Premium Honey Background Mobile"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center brightness-[0.7] contrast-[1.05]"
+        />
+      </div>
+
+      {/* OVERLAY GRADIENT */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-br from-black/10 via-transparent to-black/40" />
 
       {/* TACTILE FILM GRAIN */}
       <div className="absolute inset-0 z-10 opacity-[0.03] pointer-events-none mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
       {/* AMBIENT GLOW */}
       <div
-        className="pointer-events-none absolute h-[60vw] w-[60vw] rounded-full blur-[120px] z-10 opacity-20 transition-transform duration-1000 ease-out"
+        className="pointer-events-none absolute h-[60vw] w-[60vw] rounded-full blur-[120px] z-10 opacity-20 transition-transform duration-1000 ease-out hidden md:block"
         style={{
           background: "radial-gradient(circle, #d4af37 0%, transparent 70%)",
           transform: `translate3d(${mousePos.x}px, ${mousePos.y}px, 0)`,
@@ -114,7 +123,7 @@ const HeroSection = () => {
         <div ref={contentRef} className="max-w-4xl">
           {/* Eyebrow */}
           <div className="overflow-hidden mb-6">
-            <p className="hero-classic-fade font-sans text-[11px] font-bold uppercase tracking-[0.6em] text-primary">
+            <p className="hero-classic-fade font-sans text-[11px] font-bold uppercase tracking-[0.6em] text-[#f5be42]">
               Premium Wellness Lifestyle
             </p>
           </div>
@@ -136,14 +145,14 @@ const HeroSection = () => {
           {/* Headline Subtext */}
           <div className="overflow-hidden mb-12">
             <h2 className="hero-classic-fade font-sans text-lg md:text-2xl font-light text-stone-200 leading-relaxed">
-              12 Unique Raw Honey Varieties. <span className="text-primary font-serif italic tracking-normal">One Powerful Journey.</span>
+              12 Unique Raw Honey Varieties. <span className="text-[#f5be42] font-serif italic tracking-normal">One Powerful Journey.</span>
             </h2>
           </div>
 
           {/* CTAs */}
           <div className="hero-classic-fade flex flex-wrap items-center gap-8">
             <a
-              href="#products"
+              href="/collection"
               className="group relative overflow-hidden rounded-full bg-primary px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all duration-500"
             >
               <span className="relative z-10 group-hover:text-[#052c22] transition-colors duration-500">Explore Collection</span>
@@ -161,29 +170,28 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom Year Mark */}
+      {/* Bottom Year Mark - Hidden on small mobile heights */}
       <div className="absolute left-12 bottom-24 hidden xl:block z-30">
         <p className="hero-classic-fade font-sans text-[10px] font-bold text-white/20 uppercase tracking-[0.5em] [writing-mode:vertical-lr] rotate-180">
           Since 2026 • AroNutra
         </p>
       </div>
 
-      {/* Side Badge */}
-      <div className="absolute right-12 bottom-12 hidden lg:block z-30 opacity-5">
+      {/* Side Badge - Opacity reduced and hidden on small heights to prevent clash */}
+      <div className="absolute right-12 bottom-12 hidden 2xl:block z-30 opacity-5">
         <p className="font-black text-[15vw] leading-none text-white tracking-tighter select-none">
           RAW
         </p>
       </div>
 
-      {/* Cinematic Scroll Indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4">
+      {/* Cinematic Scroll Indicator - Made responsive to screen height */}
+      <div className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 pointer-events-none">
         <span className="hero-classic-fade font-sans text-[9px] font-bold uppercase tracking-[0.4em] text-white/40">Scroll</span>
-        <div className="h-14 w-[1px] bg-white/10 relative overflow-hidden">
+        <div className="h-10 md:h-14 w-[1px] bg-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full bg-primary animate-classic-scroll" />
         </div>
       </div>
 
-      {/* Performance Optimized Keyframes */}
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes classic-scroll {
@@ -193,6 +201,11 @@ const HeroSection = () => {
         }
         .animate-classic-scroll {
           animation: classic-scroll 2.5s infinite cubic-bezier(0.7, 0, 0.3, 1);
+        }
+        /* Fix for very short laptop screens */
+        @media (max-height: 700px) and (min-width: 1024px) {
+          .hero-classic-fade { transform: scale(0.9); transform-origin: left; }
+          h1 { font-size: 5vw !important; }
         }
       `}} />
     </section>

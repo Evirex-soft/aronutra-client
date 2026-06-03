@@ -145,9 +145,11 @@ const NavBar = () => {
               <Image
                 src="/images/logo.png"
                 alt="Logo"
-                width={isScrolled && !isMenuOpen ? 100 : 130}
-                height={40}
-                className={`transition-all duration-500 object-contain w-22.5 md:w-32.5 ${isScrolled && !isMenuOpen ? "md:w-25" : ""
+                width={200}
+                height={70}
+                className={`transition-all duration-500 object-contain ${isScrolled && !isMenuOpen
+                  ? "w-24 md:w-32"
+                  : "w-32 md:w-44"
                   } ${logoFilter}`}
               />
             </Link>
@@ -198,26 +200,24 @@ const NavBar = () => {
         ref={overlayRef}
         onMouseMove={handleMouseMove}
         className="
-          fixed inset-0
-          z-[190]
-          flex flex-col
-          overflow-hidden
-          pointer-events-none
-          data-[open=true]:pointer-events-auto
-          h-[100dvh]
-          /* 1. The Glass Base */
-          bg-white/[0.01] 
-          backdrop-blur-2xl
-          /* 2. The Glass Edge (The most important part) */
-          border-l border-white/10
-        "
+  fixed inset-0
+  z-[190]
+  flex flex-col
+  overflow-hidden
+  pointer-events-none
+  data-[open=true]:pointer-events-auto
+  h-[100dvh]
+  bg-white/10
+  backdrop-blur-2xl
+  border-l border-white/30
+"
         data-open={isMenuOpen}
       >
         {/* 3. Color Tint Layer (Keeps your brand green but translucent) */}
         <div className="absolute inset-0 bg-[#052c22]/60 -z-10" />
 
         {/* 4. Glossy Shine Layer (Simulates light hitting glass) */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
 
         {/* 5. Content Layout */}
         <div
@@ -244,12 +244,12 @@ const NavBar = () => {
         </div>
 
         {/* Floating Image with Glassy Shadow */}
-        <div
+        {/* <div
           ref={imageRef}
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-56 md:w-56 md:h-72 pointer-events-none z-0 rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10"
         >
           <Image src="/images/hero_img.png" alt="Visual" fill className="object-cover" priority />
-        </div>
+        </div> */}
 
         {/* Navigation Links */}
         <div className="flex-1 flex items-center lg:items-end justify-center lg:justify-start relative z-20 pb-12 lg:pb-20">

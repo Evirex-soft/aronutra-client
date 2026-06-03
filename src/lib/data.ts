@@ -1,5 +1,5 @@
 import clientPromise from "./mongodb";
-import { IProduct } from "../../types/product";
+import { IProduct } from "@/types/product";
 import "server-only";
 
 

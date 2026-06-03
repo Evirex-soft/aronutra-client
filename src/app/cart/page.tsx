@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { useCart } from "../contexts/CartContext";
+import { useCart } from "@/app/contexts/CartContext";
 import Link from "next/link";
 import { FaTag } from "react-icons/fa";
 import { ShoppingBag, Minus, Plus, ArrowRight, X, ChevronRight } from "lucide-react";

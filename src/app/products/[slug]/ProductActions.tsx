@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
-import { Minus, Plus, Heart, ShoppingBag } from "lucide-react";
-import { IProduct } from "../../../../types/product";
+import { Minus, Plus, Heart, ShoppingBag, ArrowRight } from "lucide-react";
+import { IProduct } from "@/types/product";
 import { useCart } from "@/app/contexts/CartContext";
 import { useWishlist } from "@/app/contexts/WishlistContext";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function ProductActions({ product, initialQuantity }: { product: IProduct; initialQuantity: number }) {
     const [quantity, setQuantity] = useState(initialQuantity);
-    const { addToCart } = useCart();
+    const { addToCart, cart } = useCart();
     const { toggleWishlist, isProductInWishlist } = useWishlist();
+    const router = useRouter();
 
+    const isInCart = cart.some((item) => item._id === product._id);
     const inWishlist = product._id ? isProductInWishlist(product._id) : false;
 
     const baseWeight = product.weight || 50;
@@ -35,9 +38,20 @@ export default function ProductActions({ product, initialQuantity }: { product: 
         setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
     };
 
+    const handleMainAction = () => {
+        if (isOutOfStock) return;
+
+        if (isInCart) {
+            router.push("/cart");
+        } else {
+            addToCart(product, quantity);
+        }
+    }
+
 
     const getButtonLabel = () => {
         if (isOutOfStock) return "Currently Out of Stock";
+        if (isInCart) return "View in Cart";
 
         if (isBundle) {
             return quantity === 1
@@ -76,7 +90,7 @@ export default function ProductActions({ product, initialQuantity }: { product: 
             </div>
 
             {/* Quantity Selector */}
-            <div className="flex items-center justify-between">
+            <div className={`flex items-center justify-between ${isInCart ? 'opacity-50 pointer-events-none' : ''}`}>
                 <div className="space-y-1">
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#052c22]">
                         Select Quantity
@@ -114,34 +128,33 @@ export default function ProductActions({ product, initialQuantity }: { product: 
             {/* Action Buttons */}
             <div className="flex flex-col gap-4">
                 <button
-                    onClick={() => addToCart(product, quantity)}
+                    onClick={handleMainAction}
                     disabled={isOutOfStock}
                     className={`
                 w-full flex items-center justify-center gap-3 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] transition-all duration-500 shadow-xl
                 ${isOutOfStock
                             ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                            : "bg-[#052c22] text-white hover:bg-black active:scale-95"
+                            : isInCart
+                                ? "bg-[#d4af37] text-[#052c22] hover:bg-[#c4a030]" // Different style for "Go to Cart"
+                                : "bg-[#052c22] text-white hover:bg-black"
                         }
+                        active:scale-95
             `}
                 >
                     {/* Show icon only if in stock */}
-                    {!isOutOfStock && <ShoppingBag size={16} />}
+                    {isOutOfStock ? null : isInCart ? <ArrowRight size={16} /> : <ShoppingBag size={16} />}
 
                     {getButtonLabel()}
                 </button>
 
-                <div className="text-center mt-4">
-                    {isOutOfStock ? (
-                        <p className="text-[10px] font-black text-red-500 uppercase tracking-widest flex items-center justify-center gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                            Our current batch is fully reserved
-                        </p>
-                    ) : product.stockQuantity < 10 ? (
+                {/* Stock Warning Text */}
+                <div className="text-center mt-2 h-4">
+                    {!isOutOfStock && product.stockQuantity < 10 && !isInCart && (
                         <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest flex items-center justify-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                            Limited Stock: Only Only {product.stockQuantity} Packages left
+                            Low Stock: Only {product.stockQuantity} left
                         </p>
-                    ) : null}
+                    )}
                 </div>
 
                 <button

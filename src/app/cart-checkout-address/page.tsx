@@ -15,7 +15,7 @@ import { openRazorpay } from "@/utils/razorpay2"
 import { toast } from "react-toastify"
 import { z } from "zod"
 import { useRouter } from "next/navigation"
-import { SavedCheckout } from "../../../types/checkout";
+import { SavedCheckout } from "@/types/checkout"
 import { STORAGE_KEYS } from "@/constants/storage";
 import { useCart } from "@/app/contexts/CartContext";
 
