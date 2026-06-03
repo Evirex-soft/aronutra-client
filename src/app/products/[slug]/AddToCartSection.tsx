@@ -2,13 +2,13 @@
 
 import React, { useRef, useState } from "react";
 import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
-import { Product } from "@/lib/types";
+import { IProduct } from "@/../types/product";
 import Continue from "./Continue";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useCart } from "@/app/contexts/CartContext";
 
-export default function AddToCartSection({ product }: { product: Product }) {
+export default function AddToCartSection({ product }: { product: IProduct }) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const router = useRouter();
@@ -63,14 +63,14 @@ export default function AddToCartSection({ product }: { product: Product }) {
 
     // store only the selected checkout item separately
     const cartItem = {
-      id: product.id,
+      id: product._id,
       name: product.name,
-      image: product.img,
-      price: product.price,
+      image: product.images[0],
+      price: product.sellingPrice,
       mrp: product.mrp,
-      description: product.desc,
+      description: product.shortDescription,
       quantity,
-      total: product.price * quantity,
+      total: product.sellingPrice * quantity,
       stockQuantity: product.stockQuantity,
     };
 
