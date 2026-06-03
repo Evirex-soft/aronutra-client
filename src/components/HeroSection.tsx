@@ -85,7 +85,7 @@ const HeroSection = () => {
       {/* BACKGROUND IMAGE - Ken Burns & Parallax */}
       <div ref={bgImageRef} className="absolute inset-0 z-0">
         <Image
-          src="/images/hero.jpg"
+          src="/images/hero.png"
           alt="Premium Honey Background"
           fill
           priority
@@ -93,7 +93,7 @@ const HeroSection = () => {
           className="object-cover object-center brightness-[0.7] contrast-[1.05]"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-b from-[#052c22]/60 via-transparent to-[#052c22]/80" />
+        {/* <div className="absolute inset-0 bg-gradient-to-b from-[#052c22]/60 via-transparent to-[#052c22]/80" /> */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(5,44,34,0.4)_100%)]" />
       </div>
 
