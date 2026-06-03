@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-hair.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-hairit.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-thin.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-thinit.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-ultralight.otf') format('opentype');
+  font-weight: 250;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-ultralightit.otf') format('opentype');
+  font-weight: 250;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-lightit.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-book.otf') format('opentype');
+  font-weight: 350;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-bookit.otf') format('opentype');
+  font-weight: 350;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-regularit.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-mediumit.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-semiboldit.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-boldit.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-heavy.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-heavyit.otf') format('opentype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Biennale';
+  src: url('/fonts/Fontspring-DEMO-biennale-blackit.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --primary: #D4AF37; /* Warm Gold */
+  --primary-dark: #9A7E27; /* Rich Dark Gold */
+  --bg-light: #FCFBFA; /* Premium Alabaster */
+  --bg-card: #FFFFFF;
+  --text-dark: #1C1917; /* Luxury Charcoal */
+  --text-muted: #6B6661; /* Taupe Gray */
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(28, 25, 23, 0.08);
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-bg-light: var(--bg-light);
+  --color-bg-card: var(--bg-card);
+  --color-text-dark: var(--text-dark);
+  --color-text-muted: var(--text-muted);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-border: var(--glass-border);
+  
+  --font-serif: "Biennale", "Clash Display", "Playfair Display", serif;
+  --font-sans: var(--font-sans), "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Shimmer/Sweep hover helper */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(150%) skewX(-25deg);
+  }
+}
+
+.hover-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-150%) skewX(-25deg);
+}
+
+.hover-shimmer:hover::after {
+  animation: shimmerSweep 1.5s ease-out infinite;
+}
+
+/* Glassmorphism Panel helper */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+}
+
+/* Lenis smooth scrolling compatibility */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+
