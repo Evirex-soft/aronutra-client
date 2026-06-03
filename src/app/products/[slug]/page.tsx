@@ -172,7 +172,7 @@ export default async function ProductDetailPage({
               </ul>
             </div>
             <div>
-              <h3 className="text-[#d4af37] font-serif text-2xl mb-6">Usage & Ingredients</h3>
+              <h3 className="text-[#d4af37] font-medium text-2xl mb-6">Usage & Ingredients</h3>
               <div className="space-y-8">
                 <div>
                   <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Ingredients</p>
