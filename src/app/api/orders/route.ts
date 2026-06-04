@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             success: true,
-            orderId: newOrder._id,
+            orderId: newOrder.orderId,
             orderNumber: newOrder.orderId
         }, { status: 201 });
 

@@ -110,12 +110,13 @@ const Footer: React.FC = () => {
             <div className="flex flex-col items-center md:items-start gap-3">
               {[
                 { name: 'Home', href: '/' },
-                { name: 'Collection', href: '/#products' },
+                { name: 'Collection', href: '/collection' },
                 { name: 'About', href: '/#about' },
                 { name: 'Contact', href: '/#footer' },
                 { name: 'Privacy Policy', href: '/privacy-policy' },
                 { name: 'Terms & Conditions', href: '/terms-and-conditions' },
-                { name: 'Refund Policy', href: '/refund-policy' },
+                { name: 'Refund & Cancellation Policy', href: '/refund-and-cancellation-policy' },
+                { name: 'Shipment & Delivery Policy', href: '/shipment-and-delivery-policy' },
                 { name: 'Cookies Policy', href: '/cookies' }
               ].map((link, i) => (
                 <Link key={i} href={link.href} className="font-sans text-[13.5px] text-stone-500 hover:text-primary transition-colors">
