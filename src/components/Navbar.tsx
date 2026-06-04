@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, User, LogOut } from "lucide-react"; // Added LogOut icon
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
 import { useCart } from "@/app/contexts/CartContext";
 import { useWishlist } from "@/app/contexts/WishlistContext";
+import { useSession, signOut } from "next-auth/react";
+import { AnimatePresence, motion } from "framer-motion";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -22,6 +24,7 @@ const NavBar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const { getCartCount } = useCart();
   const { wishlist } = useWishlist();
+  const { data: session } = useSession();
 
   const cartCount = getCartCount();
   const wishlistCount = wishlist.length;
@@ -121,12 +124,10 @@ const NavBar = () => {
     }
   };
 
-  // Determine element colors based on state
   const isOnDarkBackground = !isScrolled || isMenuOpen;
   const activeColor = isOnDarkBackground ? "text-white" : "text-[#052c22]";
   const logoFilter = isOnDarkBackground ? "brightness-100" : "brightness-0";
 
-  // capsule logic
   const capsuleBase = "transition-all duration-700 ease-in-out flex items-center shadow-[0_20px_40px_-15px_rgba(0, 0, 0, 0.1)]";
   const capsuleActive = "h-14 bg-white/80 backdrop-blur-xl rounded-full px-6 md:px-8";
   const capsuleInactive = "h-20 bg-transparent px-0";
@@ -134,11 +135,9 @@ const NavBar = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-200 pointer-events-none transition-all duration-700 ${isScrolled && !isMenuOpen ? "pt-4" : "pt-0"
-          }`}
+        className={`fixed top-0 left-0 w-full z-200 pointer-events-none transition-all duration-700 ${isScrolled && !isMenuOpen ? "pt-4" : "pt-0"}`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-12">
-
           {/* LEFT CAPSULE: Logo */}
           <div className={`pointer-events-auto ${capsuleBase} ${isScrolled && !isMenuOpen ? capsuleActive : capsuleInactive}`}>
             <Link href="/" className="relative z-210 shrink-0">
@@ -147,42 +146,40 @@ const NavBar = () => {
                 alt="Logo"
                 width={200}
                 height={70}
-                className={`transition-all duration-500 object-contain ${isScrolled && !isMenuOpen
-                  ? "w-24 md:w-32"
-                  : "w-32 md:w-44"
-                  } ${logoFilter}`}
+                className={`transition-all duration-500 object-contain ${isScrolled && !isMenuOpen ? "w-24 md:w-32" : "w-32 md:w-44"} ${logoFilter}`}
               />
             </Link>
           </div>
 
           {/* RIGHT CAPSULE: Actions & Menu */}
           <div className={`pointer-events-auto ${capsuleBase} ${isScrolled && !isMenuOpen ? capsuleActive : capsuleInactive} gap-4 md:gap-8`}>
-
-            {/* Wishlist & Cart (Hidden on scroll textually, but we keep icons) */}
             <div className={`flex gap-4 md:gap-6 items-center transition-all duration-500 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               <Link href="/wishlist" className={`relative transition-colors ${activeColor} hover:text-primary`}>
                 <Heart size={isScrolled && !isMenuOpen ? 18 : 20} strokeWidth={2} />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">
-                    {wishlistCount}
-                  </span>
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">{wishlistCount}</span>
                 )}
               </Link>
               <Link href="/cart" className={`relative transition-colors ${activeColor} hover:text-primary`}>
                 <ShoppingBag size={isScrolled && !isMenuOpen ? 18 : 20} strokeWidth={2} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">
-                    {cartCount}
-                  </span>
+                  <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">{cartCount}</span>
                 )}
               </Link>
             </div>
 
-            {/* Menu Toggle */}
-            <button
-              onClick={toggleMenu}
-              className={`flex items-center gap-2 md:gap-3 uppercase text-[10px] font-bold tracking-[0.2em] transition-colors ${activeColor}`}
-            >
+            <div className={`h-4 w-px bg-current opacity-20 transition-all duration-500 ${isMenuOpen ? 'opacity-0' : 'opacity-20'}`} />
+
+            <div className={`flex items-center transition-all duration-500 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <Link href={session ? "/profile" : "/login"} className={`flex items-center gap-2 group transition-colors ${activeColor} hover:text-[#c5a358]`}>
+                <User size={isScrolled && !isMenuOpen ? 18 : 20} strokeWidth={1.5} />
+                <span className={`hidden lg:block text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 ${isScrolled && !isMenuOpen ? "max-w-0 overflow-hidden opacity-0" : "max-w-32 opacity-100"}`}>
+                  {session ? `Hi, ${session.user?.name}` : "Sign In"}
+                </span>
+              </Link>
+            </div>
+
+            <button onClick={toggleMenu} className={`flex items-center gap-2 md:gap-3 uppercase text-[10px] font-bold tracking-[0.2em] transition-colors ${activeColor}`}>
               <span className={`hidden md:block transition-all duration-500 ${isScrolled && !isMenuOpen ? "max-w-0 opacity-0 overflow-hidden" : "max-w-20 opacity-100"}`}>
                 {isMenuOpen ? "Close" : "Menu"}
               </span>
@@ -199,59 +196,62 @@ const NavBar = () => {
       <div
         ref={overlayRef}
         onMouseMove={handleMouseMove}
-        className="
-  fixed inset-0
-  z-[190]
-  flex flex-col
-  overflow-hidden
-  pointer-events-none
-  data-[open=true]:pointer-events-auto
-  h-[100dvh]
-  bg-white/10
-  backdrop-blur-2xl
-  border-l border-white/30
-"
+        className="fixed inset-0 z-[190] flex flex-col overflow-hidden pointer-events-none data-[open=true]:pointer-events-auto h-[100dvh] bg-white/10 backdrop-blur-2xl border-l border-white/30"
         data-open={isMenuOpen}
       >
-        {/* 3. Color Tint Layer (Keeps your brand green but translucent) */}
         <div className="absolute inset-0 bg-[#052c22]/60 -z-10" />
-
-        {/* 4. Glossy Shine Layer (Simulates light hitting glass) */}
         <div className="absolute inset-0 bg-linear-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
 
-        {/* 5. Content Layout */}
+        {/* TOP METADATA ROW: Re-organized into 3 columns */}
         <div
           ref={contentRef}
-          className="flex justify-between p-8 md:p-12 pt-24 md:pt-32 text-white/40 uppercase text-[9px] font-bold tracking-[0.25em] relative z-10"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 md:p-12 pt-24 md:pt-32 text-white/40 uppercase text-[9px] font-bold tracking-[0.25em] relative z-10"
         >
-          <div className="max-w-[260px]">
+          {/* Col 1: Brand Info */}
+          <div>
             <p className="text-primary text-[11px] mb-2 font-black">AroNutra®</p>
-            <p className="leading-relaxed normal-case tracking-normal text-[11px] text-white/60">
+            <p className="leading-relaxed normal-case tracking-normal text-[11px] text-white/60 max-w-[200px]">
               Meppadi Road, Palavayal, Chembothara, Kalpetta, Kerala 673577
             </p>
-            <a href="tel:+917306288233" className="block mt-2 text-primary hover:text-white transition-colors text-[11px]">
-              +91 73062 88233
-            </a>
           </div>
-          <div className="text-right">
+
+          {/* Col 2: Member Info (Dynamic) */}
+          <div className="flex flex-col items-start md:items-center text-left md:text-center">
+            <AnimatePresence>
+              {session && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-2"
+                >
+                  <p className="text-[#c5a358] text-[11px] font-black">Member</p>
+                  <Link href="/profile" className="block text-white text-base font-serif italic normal-case tracking-normal hover:text-primary transition-colors">
+                    {session.user?.name || "My Account"}
+                  </Link>
+                  <button
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors mt-1"
+                  >
+                    <LogOut size={12} />
+                    <span>Sign Out</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Col 3: Social/Connect */}
+          <div className="text-left md:text-right">
             <p className="text-primary text-[11px] mb-2 font-black">Connect</p>
             <div className="flex flex-col gap-2">
               <a href="#" className="hover:text-white transition-colors">Instagram</a>
-              <a href="#" className="hover:text-white transition-colors">Facebook</a>
               <a href="#" className="hover:text-white transition-colors">WhatsApp</a>
+              <a href="tel:+917306288233" className="normal-case tracking-normal text-white/60">+91 73062 88233</a>
             </div>
           </div>
         </div>
 
-        {/* Floating Image with Glassy Shadow */}
-        {/* <div
-          ref={imageRef}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-56 md:w-56 md:h-72 pointer-events-none z-0 rounded-xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10"
-        >
-          <Image src="/images/hero_img.png" alt="Visual" fill className="object-cover" priority />
-        </div> */}
-
-        {/* Navigation Links */}
+        {/* Navigation Links (Main sliding section) */}
         <div className="flex-1 flex items-center lg:items-end justify-center lg:justify-start relative z-20 pb-12 lg:pb-20">
           <div ref={wrapperRef} className="flex flex-col lg:flex-row items-center lg:items-center gap-6 lg:gap-16 px-8 md:px-12 w-full lg:w-max">
             {navLinks.map((link) => (
@@ -263,7 +263,6 @@ const NavBar = () => {
                   className="block h-auto lg:h-20 overflow-hidden group"
                 >
                   <div className="relative flex flex-col transition-transform duration-500 ease-out lg:group-hover:-translate-y-1/2">
-                    {/* Added drop-shadow to text to ensure readability on frosted glass */}
                     <span className="text-4xl md:text-5xl lg:text-[5.5vw] font-black leading-tight lg:leading-20 uppercase text-white tracking-tighter drop-shadow-md">
                       {link.name}
                     </span>

@@ -18,26 +18,15 @@ import { useRouter } from "next/navigation"
 import { SavedCheckout } from "@/types/checkout"
 import { STORAGE_KEYS } from "@/constants/storage";
 import { useCart } from "@/app/contexts/CartContext";
+import { useSession } from "next-auth/react";
+import { addressSchema } from "@/utils/validations";
 
 type PaymentMethod = "upi" | "card" | "netbanking" | "cod" | "razorpay"
-
-
-
-const addressSchema = z.object({
-  fullName: z.string().min(3, "Full name must be at least 3 characters"),
-  phone: z
-    .string()
-    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit phone number"),
-  email: z.string().email("Enter a valid email address"),
-  streetAddress: z.string().min(5, "Street address is too short"),
-  city: z.string().min(2, "City is required"),
-  state: z.string().min(2, "State is required"),
-  pincode: z.string().regex(/^\d{6}$/, "Enter a valid 6-digit pincode")
-})
 
 type Errors = Partial<Record<keyof typeof addressSchema.shape, string>>
 
 export default function CheckoutAddressPage() {
+  const { data: session } = useSession();
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>("razorpay")
   const [formData, setFormData] = useState({
     fullName: "",
@@ -60,7 +49,15 @@ export default function CheckoutAddressPage() {
       const parsed = JSON.parse(savedItem);
       setCheckoutData(parsed);
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const savedAddress = localStorage.getItem(STORAGE_KEYS.SHIPPING_ADDRESS)
+    if (savedAddress) {
+      setFormData(JSON.parse(savedAddress))
+      localStorage.removeItem(STORAGE_KEYS.SHIPPING_ADDRESS)
+    }
+  }, []);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -76,6 +73,20 @@ export default function CheckoutAddressPage() {
         newErrors[field] = err.message
       })
       setErrors(newErrors)
+      return
+    }
+
+    const user = session?.user as { id?: string; email?: string } | undefined
+
+    if (!user?.id || !user?.email) {
+      toast.info("Please sign in to complete your purchase")
+
+      // Save their progress so they don't have to re-type the address
+      localStorage.setItem(STORAGE_KEYS.SHIPPING_ADDRESS, JSON.stringify(formData))
+
+      const returnPath = encodeURIComponent("/cart-checkout-address");
+      // Redirect to login with a callback return to this page
+      router.push(`/login?callbackUrl=${returnPath}`)
       return
     }
 
@@ -96,6 +107,8 @@ export default function CheckoutAddressPage() {
             paymentMethod: "COD",
             paymentStatus: "PENDING",
             orderStatus: "PLACED",
+            userId: user.id,
+            userEmail: user.email,
           }),
         });
 

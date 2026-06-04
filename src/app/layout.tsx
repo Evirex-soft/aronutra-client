@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import SmoothScroll from "@/components/SmoothScroll";
+import Providers from "./Providers";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -41,14 +42,16 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} antialiased`}
       >
-        <SmoothScroll />
-        <WishlistProvider>
-          <CartProvider>
-            <NavBar />
-            <main>{children}</main>
-            <Footer />
-          </CartProvider>
-        </WishlistProvider>
+        <Providers>
+          <SmoothScroll />
+          <WishlistProvider>
+            <CartProvider>
+              <NavBar />
+              <main>{children}</main>
+              <Footer />
+            </CartProvider>
+          </WishlistProvider>
+        </Providers>
 
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       </body>
