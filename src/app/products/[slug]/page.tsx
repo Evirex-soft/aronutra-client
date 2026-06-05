@@ -29,6 +29,7 @@ export default async function ProductDetailPage({
 
     product = {
       _id: "bundle-001",
+      slug: "discovery-collection",
       name: "The Discovery Collection",
       sellingPrice: bundlePrice,
       productType: "BUNDLE",
@@ -39,6 +40,8 @@ export default async function ProductDetailPage({
       stockQuantity: 15,
       purityPercentage: 100
     };
+
+
   } else {
     const prod = await getProductBySlug(resolvedParams.slug);
     if (!prod) notFound();

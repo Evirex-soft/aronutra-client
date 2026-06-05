@@ -3,6 +3,7 @@ import mongoose, { Document, Schema, models } from "mongoose";
 const OrderItemSchema = new Schema({
     productId: { type: Schema.Types.ObjectId, ref: "Product", required: true }, // IMPORTANT
     name: { type: String, required: true },
+    slug: { type: String, required: true },
     image: { type: String }, // First image URL
     mrp: { type: Number, required: true },
     sellingPrice: { type: Number, required: true }, // Renamed for consistency

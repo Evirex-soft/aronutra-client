@@ -117,6 +117,11 @@ export default function CheckoutAddressPage() {
         if (response.ok) {
           toast.success("Order placed successfully!");
           clearCart(); // Clear the context cart
+
+          // Clear the checkout data so this order can't be re-submitted
+          localStorage.removeItem(STORAGE_KEYS.CHECKOUT);
+          localStorage.removeItem(STORAGE_KEYS.SHIPPING_ADDRESS);
+
           router.push(`/order-confirmation/${result.orderId}`); // Navigate to success page
         } else {
           throw new Error(result.message || "Failed to place order");

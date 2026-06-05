@@ -196,57 +196,80 @@ const NavBar = () => {
       <div
         ref={overlayRef}
         onMouseMove={handleMouseMove}
-        className="fixed inset-0 z-[190] flex flex-col overflow-hidden pointer-events-none data-[open=true]:pointer-events-auto h-[100dvh] bg-white/10 backdrop-blur-2xl border-l border-white/30"
+        className="fixed inset-0 z-[190] flex flex-col overflow-y-auto lg:overflow-hidden pointer-events-none data-[open=true]:pointer-events-auto h-[100dvh] bg-white/10 backdrop-blur-2xl border-l border-white/30"
         data-open={isMenuOpen}
       >
         <div className="absolute inset-0 bg-[#052c22]/60 -z-10" />
         <div className="absolute inset-0 bg-linear-to-br from-white/[0.08] via-transparent to-transparent pointer-events-none" />
 
-        {/* TOP METADATA ROW: Re-organized into 3 columns */}
+        {/* METADATA ROW */}
         <div
           ref={contentRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 p-8 md:p-12 pt-24 md:pt-32 text-white/40 uppercase text-[9px] font-bold tracking-[0.25em] relative z-10"
+          className="grid grid-cols-2 md:grid-cols-3 gap-y-10 gap-x-4 p-8 md:p-12 pt-24 md:pt-32 text-white/40 uppercase text-[9px] font-bold tracking-[0.25em] relative z-10"
         >
-          {/* Col 1: Brand Info */}
-          <div>
+          {/* Col 1: Brand Info (Left) */}
+          <div className="order-1">
             <p className="text-primary text-[11px] mb-2 font-black">AroNutra®</p>
             <p className="leading-relaxed normal-case tracking-normal text-[11px] text-white/60 max-w-[200px]">
               Meppadi Road, Palavayal, Chembothara, Kalpetta, Kerala 673577
             </p>
           </div>
 
-          {/* Col 2: Member Info (Dynamic) */}
-          <div className="flex flex-col items-start md:items-center text-left md:text-center">
+          {/* Col 2: Member Info (Right on Mobile, Center on Desktop) */}
+          <div className="order-2 flex flex-col items-end md:items-center text-right md:text-center">
             <AnimatePresence>
-              {session && (
+              {session ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-2"
                 >
-                  <p className="text-[#c5a358] text-[11px] font-black">Member</p>
-                  <Link href="/profile" className="block text-white text-base font-serif italic normal-case tracking-normal hover:text-primary transition-colors">
-                    {session.user?.name || "My Account"}
+                  <p className="text-[#c5a358] text-[11px] font-black">
+                    Welcome Back
+                  </p>
+
+                  <Link href="/profile" className="block group">
+                    <span className="text-white text-base font-serif italic normal-case tracking-normal hover:text-primary transition-colors">
+                      {session.user?.name || "My Account"}
+                    </span>
+                    <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1 group-hover:text-primary transition-colors">
+                      View Profile
+                    </p>
                   </Link>
+
                   <button
                     onClick={() => signOut({ callbackUrl: "/" })}
-                    className="flex items-center gap-2 text-white/40 hover:text-white transition-colors mt-1"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-all mt-2 ml-auto md:mx-auto"
                   >
                     <LogOut size={12} />
-                    <span>Sign Out</span>
+                    <span>LogOut</span>
                   </button>
                 </motion.div>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-primary text-[11px] font-black">Member</p>
+                  <Link href="/login" className="text-white text-base font-serif italic normal-case tracking-normal">Sign In</Link>
+                </div>
               )}
             </AnimatePresence>
           </div>
 
           {/* Col 3: Social/Connect */}
-          <div className="text-left md:text-right">
+          <div className="hidden md:block order-3 col-span-2 md:col-span-1 text-left md:text-right border-t border-white/5 pt-6 md:border-0 md:pt-0">
             <p className="text-primary text-[11px] mb-2 font-black">Connect</p>
-            <div className="flex flex-col gap-2">
-              <a href="#" className="hover:text-white transition-colors">Instagram</a>
-              <a href="#" className="hover:text-white transition-colors">WhatsApp</a>
-              <a href="tel:+917306288233" className="normal-case tracking-normal text-white/60">+91 73062 88233</a>
+            <div className="flex flex-row md:flex-col gap-4 md:gap-2">
+              <a href="#" className="hover:text-white transition-colors">
+                Instagram
+              </a>
+              <a href="#" className="hover:text-white transition-colors">
+                WhatsApp
+              </a>
+              <a
+                href="tel:+917306288233"
+                className="normal-case tracking-normal text-white/60"
+              >
+                +91 73062 88233
+              </a>
             </div>
           </div>
         </div>

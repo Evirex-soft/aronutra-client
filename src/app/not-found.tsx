@@ -3,18 +3,17 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
+import Lottie from "lottie-react";
+import honeyBee from "../../public/animations/honeybee.json";
 
 export default function NotFound() {
     return (
-        <div className="min-h-[100dvh] bg-[#052c22] flex items-center justify-center px-6 py-20 overflow-hidden selection:bg-[#d4af37] selection:text-[#052c22]">
+        <div className="min-h-[100dvh] w-full bg-[#052c22] flex items-start justify-center pt-24 lg:pt-32 px-4 sm:px-6 py-10 overflow-hidden relative">
 
-            {/* 1. BACKGROUND DECORATIONS */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                {/* Glow Effects */}
-                <div className="absolute top-[-10%] right-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[#d4af37]/10 rounded-full blur-[80px] md:blur-[120px]" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-white/5 rounded-full blur-[80px] md:blur-[120px]" />
+            {/* 1. BACKGROUND DECORATIONS (Non-interactive) */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none select-none">
 
-                {/* Subtle Hexagon Pattern (Honeycomb) */}
+                {/* Subtle Hexagon Pattern */}
                 <div className="absolute inset-0 opacity-[0.03] flex items-center justify-center">
                     <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -27,94 +26,98 @@ export default function NotFound() {
                 </div>
             </div>
 
-            <div className="relative z-10 text-center w-full max-w-2xl">
+            {/* 2. MAIN CONTENT WRAPPER */}
+            <div className="relative z-10 text-center w-full max-w-5xl mx-auto flex flex-col items-center justify-center">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full"
                 >
 
-                    {/* 2. THE FLYING BEE SVG */}
-                    <div className="relative h-32 md:h-48 flex items-center justify-center mb-8">
+                    {/* 404 & BEE CONTAINER */}
+                    <div className="relative flex items-center justify-center w-full h-[30vh] min-h-[200px] max-h-[450px] mb-4 md:mb-8 select-none">
+
+                        {/* Dynamic Background 404 */}
+                        <motion.h2
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 0.1, scale: 1 }}
+                            transition={{ duration: 1.2 }}
+                            className="absolute font-black text-[#d4af37] leading-none pointer-events-none tracking-tighter
+                                       text-[25vw] sm:text-[20vw] md:text-[250px] lg:text-[300px]"
+                        >
+                            404
+                        </motion.h2>
+
+                        {/* Bee */}
                         <motion.div
                             animate={{
-                                y: [0, -15, 0],
-                                x: [0, 10, 0],
-                                rotate: [0, 5, -5, 0]
+                                y: [0, -20, 10, 0],
+                                x: [-15, 15, -10, 0],
+                                rotate: [0, 5, -5, 0],
                             }}
                             transition={{
-                                duration: 5,
+                                duration: 6,
                                 repeat: Infinity,
                                 ease: "easeInOut"
                             }}
-                            className="relative"
+                            className="relative z-20 pointer-events-none
+                                       w-[45vw] h-[45vw] 
+                                       sm:w-[35vw] sm:h-[35vw] 
+                                       md:w-[300px] md:h-[300px] 
+                                       lg:w-[400px] lg:h-[400px]"
                         >
-                            <svg
-                                width="80"
-                                height="80"
-                                viewBox="0 0 100 100"
-                                className="md:w-24 md:h-24 filter drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                {/* Wings */}
-                                <motion.path
-                                    animate={{ opacity: [0.3, 0.8, 0.3] }}
-                                    transition={{ duration: 0.1, repeat: Infinity }}
-                                    d="M50 40 C30 10 10 30 45 45 M50 40 C70 10 90 30 55 45"
-                                    stroke="#d4af37"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                {/* Body */}
-                                <path d="M40 50 C40 35 60 35 60 50 C60 65 40 65 40 50 Z" fill="#d4af37" />
-                                {/* Stripes */}
-                                <path d="M42 48 H58 M42 52 H58 M42 56 H58" stroke="#052c22" strokeWidth="1.5" />
-                                {/* Head */}
-                                <circle cx="50" cy="38" r="4" fill="#d4af37" />
-                                {/* Antennae */}
-                                <path d="M47 35 L44 30 M53 35 L56 30" stroke="#d4af37" strokeWidth="1" />
-                            </svg>
+                            <Lottie
+                                animationData={honeyBee}
+                                loop={true}
+                                className="w-full h-full object-contain"
+                            />
                         </motion.div>
                     </div>
 
-                    {/* 3. TEXT CONTENT */}
-                    <div className="space-y-6 md:space-y-8 mb-12 md:mb-16">
-                        <motion.h2
+                    {/* TEXT CONTENT */}
+                    <div className="space-y-4 md:space-y-6 mb-8 md:mb-12 relative z-30 px-2">
+                        <motion.h1
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.3 }}
-                            className="text-[#d4af37] text-[10px] md:text-[12px] font-black uppercase tracking-[0.6em]"
+                            transition={{ delay: 0.4 }}
+                            className="font-serif italic text-white leading-[1.1] tracking-tight
+                                       text-4xl sm:text-6xl md:text-7xl lg:text-8xl"
                         >
-                            Error 404
-                        </motion.h2>
+                            Lost in <br className="hidden xs:block" /> the Wilds?
+                        </motion.h1>
 
-                        <h1 className="text-5xl sm:text-6xl md:text-8xl font-serif italic text-white leading-[1.1] tracking-tight">
-                            Lost in <br className="hidden sm:block" /> the Wilds?
-                        </h1>
-
-                        <p className="text-white/50 text-sm md:text-base max-w-sm mx-auto leading-relaxed font-light px-4">
-                            Even the best foragers lose their way sometimes. This page has been moved or harvested.
-                        </p>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="text-white/60 mx-auto leading-relaxed font-light
+                                       text-xs sm:text-sm md:text-base lg:text-lg 
+                                       max-w-[280px] sm:max-w-md"
+                        >
+                            Even the best foragers lose their way sometimes. <br className="hidden sm:block" />
+                            This page has been moved or harvested.
+                        </motion.p>
                     </div>
 
-                    {/* 4. CALL TO ACTION */}
+                    {/* CALL TO ACTION */}
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.6 }}
-                        className="flex flex-col sm:flex-row items-center justify-center gap-6"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7 }}
+                        className="flex flex-col items-center justify-center px-4"
                     >
                         <Link
                             href="/"
-                            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#d4af37] text-[#052c22] px-10 py-5 rounded-full font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-white hover:scale-105 transition-all shadow-[0_20px_40px_rgba(0,0,0,0.3)] active:scale-95 group"
+                            className="group relative inline-flex items-center justify-center gap-3 bg-[#d4af37] text-[#052c22] 
+                                       px-8 py-4 sm:px-10 sm:py-5 rounded-full font-bold uppercase tracking-[0.2em] 
+                                       text-[10px] sm:text-[11px] hover:bg-white hover:scale-105 transition-all 
+                                       shadow-[0_20px_40px_rgba(0,0,0,0.4)] active:scale-95 w-full sm:w-auto"
                         >
-                            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                             Back to Home
                         </Link>
                     </motion.div>
-
-
                 </motion.div>
             </div>
         </div>
