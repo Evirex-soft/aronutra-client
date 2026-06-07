@@ -1,0 +1,46 @@
+export function SignupSkeleton() {
+    return (
+        <div className="w-full max-w-[400px] z-10">
+            {/* Header Skeleton */}
+            <div className="text-center mb-10 space-y-4">
+                <div className="flex justify-center items-center mb-2">
+                    <div className="h-px w-8 bg-[#c5a358]/20" />
+                    <div className="mx-4 w-24 h-2 bg-[#c5a358]/20 rounded-full" />
+                    <div className="h-px w-8 bg-[#c5a358]/20" />
+                </div>
+                {/* animate-pulse is a standard Tailwind animation that works on the server */}
+                <div className="h-10 w-56 bg-white/5 mx-auto rounded-lg animate-pulse" />
+                <div className="h-3 w-40 bg-white/5 mx-auto rounded-full animate-pulse" />
+            </div>
+
+            {/* Card Skeleton */}
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-8 md:p-10 shadow-2xl space-y-7">
+                {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="space-y-3">
+                        <div className="h-2 w-20 bg-white/10 rounded-full" />
+                        <div className="h-10 w-full bg-white/5 border-b border-white/10" />
+                    </div>
+                ))}
+
+                {/* Button Skeleton with a CSS-based shimmer */}
+                <div className="relative overflow-hidden h-14 w-full bg-white/10 mt-6">
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+                </div>
+
+                <div className="flex items-center gap-4 py-4">
+                    <div className="h-px flex-grow bg-white/5" />
+                    <div className="h-2 w-16 bg-white/5 rounded-full" />
+                    <div className="h-px flex-grow bg-white/5" />
+                </div>
+
+                <div className="h-12 w-full border border-white/10 rounded-sm bg-white/5 animate-pulse" />
+            </div>
+
+            {/* Footer Skeleton */}
+            <div className="mt-8 flex justify-center gap-2">
+                <div className="h-2 w-32 bg-white/5 rounded-full animate-pulse" />
+                <div className="h-2 w-16 bg-[#c5a358]/20 rounded-full animate-pulse" />
+            </div>
+        </div>
+    );
+}

@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 export default function LoginFormSkeleton() {
     return (
         <div className="w-full max-w-[400px] z-10">
@@ -31,15 +29,13 @@ export default function LoginFormSkeleton() {
                     <div className="h-10 w-full bg-white/5 border-b border-white/10" />
                 </div>
 
-                {/* Button Skeleton */}
-                <div className="relative overflow-hidden h-14 w-full bg-white/5 mt-4">
-                    {/* Shimmer Effect */}
-                    <motion.div
-                        initial={{ x: "-100%" }}
-                        animate={{ x: "100%" }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                    />
+                {/* Button Skeleton with CSS Shimmer */}
+                <div className="relative overflow-hidden h-14 w-full bg-white/10 mt-4">
+                    {/* 
+                       Standard CSS Shimmer: 
+                       Uses the animation defined in your globals.css 
+                    */}
+                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
                 </div>
 
                 {/* Divider */}
@@ -50,13 +46,13 @@ export default function LoginFormSkeleton() {
                 </div>
 
                 {/* Social Button Skeleton */}
-                <div className="h-12 w-full border border-white/10 rounded-sm bg-white/5" />
+                <div className="h-12 w-full border border-white/10 rounded-sm bg-white/5 animate-pulse" />
             </div>
 
             {/* Footer Skeleton */}
             <div className="mt-8 flex justify-center gap-2">
-                <div className="h-2 w-32 bg-white/5 rounded-full" />
-                <div className="h-2 w-16 bg-[#c5a358]/20 rounded-full" />
+                <div className="h-2 w-32 bg-white/5 rounded-full animate-pulse" />
+                <div className="h-2 w-16 bg-[#c5a358]/20 rounded-full animate-pulse" />
             </div>
         </div>
     );

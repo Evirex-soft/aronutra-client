@@ -243,6 +243,14 @@ body {
   animation: shimmerSweep 1.5s ease-out infinite;
 }
 
+@layer utilities {
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
 /* Glassmorphism Panel helper */
 .glass-panel {
   background: var(--glass-bg);
