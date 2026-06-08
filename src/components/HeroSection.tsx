@@ -82,7 +82,7 @@ const HeroSection = () => {
       {/* DESKTOP BACKGROUND IMAGE */}
       <div ref={bgImageRef} className="absolute inset-0 z-0 hidden md:block">
         <Image
-          src="/images/hero.png"
+          src="/images/hero-desk.png"
           alt="Premium Honey Background"
           fill
           priority
@@ -94,7 +94,7 @@ const HeroSection = () => {
       {/* MOBILE BACKGROUND IMAGE */}
       <div ref={bgImageMobileRef} className="absolute inset-0 z-0 block md:hidden">
         <Image
-          src="/images/mobile.png"
+          src="/images/mobile.jpg"
           alt="Premium Honey Background Mobile"
           fill
           priority

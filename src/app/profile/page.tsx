@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import { getUserProfile } from "@/lib/services/user";
 import { getOrdersByUserId } from "@/lib/services/order";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
 import EditProfileForm from "./EditProfileForm";
 

@@ -6,7 +6,7 @@ import { Resend } from "resend";
 import { OrderConfirmationEmail } from "@/emails/OrderConfirmation";
 import { render } from "@react-email/render";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
