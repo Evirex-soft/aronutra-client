@@ -8,7 +8,7 @@ export async function GET() {
       return NextResponse.json({ error: "Database connection not established" }, { status: 503 });
     }
     const db = client.db("test");
-    const products = await db.collection("products").find({}).toArray();
+    const products = await db.collection("products").find({ status: "ACTIVE" }).toArray();
 
     return NextResponse.json(
       products.map(p => ({

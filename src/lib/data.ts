@@ -15,7 +15,7 @@ export async function getPackages(): Promise<IProduct[]> {
         const collection = await getProductsCollection();
 
         // Filter specifically for PACKAGE
-        const products = await collection.find({ productType: "PACKAGE" }).toArray();
+        const products = await collection.find({ productType: "PACKAGE", status: "ACTIVE" }).toArray();
 
         return products.map((doc) => ({
             ...doc,
@@ -34,7 +34,7 @@ export async function getPackages(): Promise<IProduct[]> {
 //     try {
 //         const collection = await getProductsCollection();
 
-//         const products = await collection.find({}).toArray();
+//         const products = await collection.find({status: "ACTIVE"}).toArray();
 
 //         return products.map((doc) => ({
 //             ...doc,
@@ -53,7 +53,7 @@ export async function getSingleProducts(): Promise<IProduct[]> {
         const collection = await getProductsCollection();
 
         // Filter specifically for SINGLE
-        const products = await collection.find({ productType: "SINGLE" }).toArray();
+        const products = await collection.find({ productType: "SINGLE", status: "ACTIVE" }).toArray();
 
         return products.map((doc) => ({
             ...doc,
@@ -71,7 +71,7 @@ export async function findProductBySlug(slug: string): Promise<IProduct | null> 
         const collection = await getProductsCollection();
 
         // IMPORTANT: Use 'slug' (matching backend), not 'urlSlug'
-        const product = await collection.findOne({ slug: slug });
+        const product = await collection.findOne({ slug: slug, status: "ACTIVE" });
 
         if (!product) return null;
 

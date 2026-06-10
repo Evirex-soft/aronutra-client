@@ -13,7 +13,7 @@ export async function GET(
     const db = client.db("test");
     const { slug } = await params;
 
-    const product = await db.collection("products").findOne({ urlSlug: slug });
+    const product = await db.collection("products").findOne({ urlSlug: slug, status: "ACTIVE", });
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
