@@ -7,6 +7,8 @@ import ReviewCard from "./ReviewCard";
 import reviewsData from "@/lib/reviewsData";
 import ProductActions from "./ProductActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductDetailPage({
   params,
   searchParams

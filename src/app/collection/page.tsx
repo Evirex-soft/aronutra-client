@@ -3,6 +3,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ArrowRight, Award, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+export const dynamic = "force-dynamic";
 
 export default async function CollectionPage() {
     // 1. Fetch data separately
