@@ -196,7 +196,12 @@ const NavBar = () => {
       <div
         ref={overlayRef}
         onMouseMove={handleMouseMove}
-        className="fixed inset-0 z-[190] flex flex-col overflow-y-auto lg:overflow-hidden pointer-events-none data-[open=true]:pointer-events-auto h-[100dvh] bg-white/10 backdrop-blur-2xl border-l border-white/30"
+        className={`fixed inset-0 z-[190] flex flex-col overflow-y-auto lg:overflow-hidden h-[100dvh] bg-white/10 backdrop-blur-2xl border-l border-white/30 transition-all duration-300 ${isMenuOpen ? "opacity-100 visible pointer-events-auto" : "opacity-0 invisible pointer-events-none"
+          }`}
+        style={{
+          clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+          visibility: isMenuOpen ? "visible" : "hidden"
+        }}
         data-open={isMenuOpen}
       >
         <div className="absolute inset-0 bg-[#052c22]/60 -z-10" />
