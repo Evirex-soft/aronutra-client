@@ -19,6 +19,8 @@ const UserSchema = new Schema({
     role: { type: String, enum: ["user", "admin"], default: "user" },
     provider: { type: String, default: "credentials" }, // 'google' or 'credentials'
     emailVerified: { type: Date, default: null },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 }, { timestamps: true });
 
 const User = models.User || model("User", UserSchema);

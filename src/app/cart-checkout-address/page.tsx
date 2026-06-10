@@ -11,7 +11,7 @@ import {
   ShieldCheck,
   ChevronRight
 } from "lucide-react"
-import { openRazorpay } from "@/utils/razorpay2"
+import { openRazorpay } from "@/utils/razorpay"
 import { toast } from "react-toastify"
 import { z } from "zod"
 import { useRouter } from "next/navigation"
@@ -104,6 +104,7 @@ export default function CheckoutAddressPage() {
             items: checkoutData.cart,
             shippingAddress: formData,
             totals: checkoutData.totals,
+            appliedCoupon: checkoutData.appliedCoupon,
             paymentMethod: "COD",
             paymentStatus: "PENDING",
             orderStatus: "PLACED",
@@ -128,7 +129,14 @@ export default function CheckoutAddressPage() {
         }
       } else if (selectedPayment === "razorpay") {
 
-        // openRazorpay(checkoutData, formData, router);
+        await openRazorpay(
+          checkoutData!,
+          formData,
+          session?.user,
+          router,
+          clearCart
+        );
+        setIsLoading(false);
       }
     } catch (error: any) {
       toast.error(error.message || "An error occurred while processing your order. Please try again.");

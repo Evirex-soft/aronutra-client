@@ -13,8 +13,7 @@ const OrderItemSchema = new Schema({
 
 const AppliedCouponSchema = new Schema({
     code: { type: String, required: true },
-    discount: { type: Number, required: true },
-    title: { type: String, required: true },
+    amountSaved: { type: Number, required: true },
 }, { _id: false });
 
 export interface IOrder extends Document {
@@ -24,8 +23,7 @@ export interface IOrder extends Document {
     totalAmount: number;
     appliedCoupon?: {
         code: string;
-        discount: number;
-        title: string;
+        amountSaved: number;
     };
     shippingAddress: {
         fullName: string;
@@ -43,7 +41,9 @@ export interface IOrder extends Document {
         razorpay_signature?: string;  // Optional for COD
         status: "Pending" | "Paid" | "Failed";
     };
-    status: "Placed" | "Shipped" | "Delivered" | "Cancelled";
+    status: "Placed" | "Shipped" | "Delivered" | "Cancelled" | "Refund Requested" | "Refunded";
+    cancellationReason: string;
+    refundReason: string;
     createdAt: Date;
 }
 
@@ -71,9 +71,11 @@ const OrderSchema = new Schema<IOrder>({
     },
     status: {
         type: String,
-        enum: ["Placed", "Shipped", "Delivered", "Cancelled"],
+        enum: ["Placed", "Shipped", "Delivered", "Cancelled", "Refund Requested", "Refunded"],
         default: "Placed",
     },
+    cancellationReason: { type: String },
+    refundReason: { type: String },
     createdAt: { type: Date, default: Date.now },
 });
 

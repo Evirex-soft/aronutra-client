@@ -7,7 +7,6 @@ import { FaTag } from "react-icons/fa";
 import { ShoppingBag, Minus, Plus, ArrowRight, X, ChevronRight } from "lucide-react";
 import CouponModal from "@/components/CouponModal";
 
-// ... (Coupon interface remains same)
 
 export default function CartPage() {
     const {
@@ -223,7 +222,10 @@ export default function CartPage() {
             <CouponModal
                 isOpen={isCouponModalOpen}
                 onClose={() => setIsCouponModalOpen(false)}
-                onApplyCoupon={applyCoupon}
+                onApplyCoupon={(coupon) => {
+                    applyCoupon(coupon);
+                    setIsCouponModalOpen(false);
+                }}
                 appliedCoupon={appliedCoupon}
                 cartTotal={getCartTotal()}
             />

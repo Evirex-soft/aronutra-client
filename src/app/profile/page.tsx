@@ -15,6 +15,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LogoutButton from "@/components/LogoutButton";
 import EditProfileForm from "./EditProfileForm";
+import OrderActions from "@/components/OrderActions";
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
@@ -36,10 +37,24 @@ export default async function ProfilePage() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-white/5 pb-12">
                     <div className="flex items-center gap-6">
                         <div className="relative group">
-                            <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-gradient-to-br from-[#d4af37] to-[#aa8d2e] flex items-center justify-center text-[#052c22] text-3xl md:text-4xl font-serif italic border-4 border-white/10 shadow-2xl">
-                                {user?.name?.charAt(0) || "U"}
+                            {/* Parent Container - Fixed size, forced circle, hides image corners */}
+                            <div className="w-20 h-20 md:w-28 md:h-28 rounded-full bg-linear-to-br from-[#d4af37] to-[#aa8d2e] flex items-center justify-center border-4 border-white/10 shadow-2xl overflow-hidden relative">
+                                {user?.image ? (
+                                    <img
+                                        src={user.image}
+                                        alt={user.name}
+                                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-110"
+                                        referrerPolicy="no-referrer"
+                                    />
+                                ) : (
+                                    <span className="text-[#052c22] text-3xl md:text-4xl font-serif italic">
+                                        {user?.name?.charAt(0) || "U"}
+                                    </span>
+                                )}
                             </div>
-                            <div className="absolute -bottom-1 -right-1 p-2 bg-[#052c22] border border-white/20 rounded-full text-[#d4af37]">
+
+                            {/* Settings Icon - Positioned relative to the group */}
+                            <div className="absolute -bottom-1 -right-1 p-2 bg-[#052c22] border border-white/20 rounded-full text-[#d4af37] shadow-xl z-10">
                                 <Settings size={14} className="animate-spin-slow" />
                             </div>
                         </div>
@@ -130,12 +145,11 @@ export default async function ProfilePage() {
                                 {orders.length > 0 ? (
                                     <div className="space-y-4">
                                         {orders.slice(0, 3).map((order: any) => (
-                                            <Link
+                                            <div
                                                 key={order._id}
-                                                href={`/orders/${order.orderId}`}
                                                 className="block group bg-white/[0.02] hover:bg-white/5 border border-white/5 rounded-2xl p-5 transition-all duration-300"
                                             >
-                                                <div className="flex items-center justify-between">
+                                                <Link href={`/orders/${order.orderId}`} className="flex items-center justify-between">
                                                     <div className="flex items-center gap-5">
                                                         <div className="w-12 h-12 rounded-full bg-[#052c22] flex items-center justify-center text-[#d4af37] border border-[#d4af37]/20 group-hover:border-[#d4af37]/60 transition-colors">
                                                             <CreditCard size={18} />
@@ -156,8 +170,10 @@ export default async function ProfilePage() {
                                                         </div>
                                                         <ChevronRight size={18} className="text-white/10 group-hover:text-white group-hover:translate-x-1 transition-all" />
                                                     </div>
-                                                </div>
-                                            </Link>
+                                                </Link>
+                                                {/* Order Action*/}
+                                                <OrderActions order={order} />
+                                            </div>
                                         ))}
                                     </div>
                                 ) : (

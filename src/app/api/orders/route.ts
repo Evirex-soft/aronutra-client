@@ -7,6 +7,8 @@ import { OrderConfirmationEmail } from "@/emails/OrderConfirmation";
 import { render } from "@react-email/render";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import Notification from "@/models/Notification";
+import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,6 +18,20 @@ export async function POST(req: Request) {
 
         await dbConnect();
         const body = await req.json();
+
+        if (body.paymentMethod.toLowerCase() === "razorpay") {
+            // Verify the signature
+            const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body.paymentDetails;
+            const sign = razorpay_order_id + "|" + razorpay_payment_id;
+            const expectedSign = crypto
+                .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+                .update(sign.toString())
+                .digest("hex");
+
+            if (razorpay_signature !== expectedSign) {
+                return NextResponse.json({ success: false, message: "Invalid payment signature" }, { status: 400 });
+            }
+        }
 
         // Check if an order for this user with these exact items 
         // was created in the last 30 seconds (Simple Idempotency)
@@ -52,18 +68,27 @@ export async function POST(req: Request) {
             totalAmount: body.totals.finalTotal,
             appliedCoupon: body.appliedCoupon ? {
                 code: body.appliedCoupon.code,
-                discount: body.appliedCoupon.discount,
-                title: body.appliedCoupon.title,
+                amountSaved: body.totals.couponDiscount,
             } : undefined,
             shippingAddress: body.shippingAddress,
             paymentDetails: {
                 method: body.paymentMethod.toLowerCase(), // Should be "cod" or "razorpay"
-                status: "Pending"
+                razorpay_order_id: body.paymentDetails?.razorpay_order_id,
+                razorpay_payment_id: body.paymentDetails?.razorpay_payment_id,
+                razorpay_signature: body.paymentDetails?.razorpay_signature,
+                status: body.paymentMethod.toLowerCase() === "razorpay" ? "Paid" : "Pending"
             },
             status: "Placed"
         };
 
         const newOrder = await Order.create(orderData);
+
+        await Notification.create({
+            title: "New Order Received",
+            message: `Order ${newOrder.orderId} placed for ₹${newOrder.totalAmount}`,
+            type: "ORDER",
+            link: `/orders/${newOrder._id}`,
+        });
 
         // Check for stock updates
         const stockUpdates = body.items.map(async (item: any) => {
@@ -72,6 +97,14 @@ export async function POST(req: Request) {
                 { $inc: { stockQuantity: -item.quantity } },
                 { new: true }
             );
+            if (product.stockQuantity <= 5) {
+                await Notification.create({
+                    title: "Low Stock Alert",
+                    message: `${product.name} has only ${product.stockQuantity} units remaining`,
+                    type: "INVENTORY",
+                    link: `/products/${product._id}`,
+                });
+            }
             if (!product) throw new Error(`Product ${item.name} is out of stock!`);
             return product;
         });

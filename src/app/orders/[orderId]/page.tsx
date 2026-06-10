@@ -6,7 +6,6 @@ import { ChevronLeft, MapPin, Tag, CreditCard, Calendar } from "lucide-react";
 export default async function OrderDetailPage({ params }: { params: Promise<{ orderId: string }> }) {
     const { orderId } = await params;
     const order = await getOrderById(orderId);
-    console.log("order:", order);
 
     if (!order) notFound();
 
@@ -19,6 +18,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
 
     // Calculate Subtotal from items
     const subtotal = order.items.reduce((acc: number, item: any) => acc + (item.sellingPrice * item.quantity), 0);
+
+    const totalMrp = order.items.reduce(
+        (acc, item) => acc + item.mrp * item.quantity,
+        0
+    );
+
+    const productDiscount = totalMrp - subtotal;
+
+    // If you store coupon discount separately
+    const couponDiscount = order.appliedCoupon?.amountSaved || 0;
+
+    const finalTotal = order.totalAmount;
 
     return (
         <div className="min-h-screen bg-[#052c22] text-white pt-32 pb-20">
@@ -76,19 +87,51 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
 
                             {/* BILLING SUMMARY */}
                             <div className="p-8 bg-white/[0.02] space-y-3">
-                                <div className="flex justify-between text-xs text-white/40 uppercase tracking-widest">
-                                    <span>Subtotal</span>
-                                    <span>₹{subtotal.toLocaleString()}</span>
+
+                                {/* MRP Total */}
+                                <div className="flex justify-between text-sm text-white/60">
+                                    <span>MRP Total</span>
+                                    <span>₹{totalMrp.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-xs text-white/40 uppercase tracking-widest">
-                                    <span>Shipping</span>
+
+                                {/* Product Discount */}
+                                {productDiscount > 0 && (
+                                    <div className="flex justify-between text-sm text-green-400">
+                                        <span>Product Discount</span>
+                                        <span>- ₹{productDiscount.toLocaleString()}</span>
+                                    </div>
+                                )}
+
+                                {/* Coupon Discount */}
+                                {couponDiscount > 0 && (
+                                    <div className="flex justify-between text-sm text-green-400">
+                                        <span>Coupon Discount</span>
+                                        <span>- ₹{couponDiscount.toLocaleString()}</span>
+                                    </div>
+                                )}
+
+                                {/* Shipping */}
+                                <div className="flex justify-between text-sm text-white/60">
+                                    <span>Shipping Charge</span>
                                     <span className="text-green-400">FREE</span>
                                 </div>
 
-                                <div className="flex justify-between text-xl font-medium italic text-[#d4af37] pt-4 border-t border-white/5">
+                                {/* Divider */}
+                                <div className="border-t border-white/10 pt-4" />
+
+                                {/* Total */}
+                                <div className="flex justify-between text-xl font-medium text-[#d4af37]">
                                     <span>Total Amount</span>
-                                    <span>₹{order.totalAmount.toLocaleString()}</span>
+                                    <span>₹{finalTotal.toLocaleString()}</span>
                                 </div>
+
+                                {/* Savings */}
+                                {(productDiscount + couponDiscount) > 0 && (
+                                    <div className="text-right text-xs text-green-400">
+                                        You saved ₹{(productDiscount + couponDiscount).toLocaleString()}
+                                    </div>
+                                )}
+
                             </div>
                         </div>
                     </div>

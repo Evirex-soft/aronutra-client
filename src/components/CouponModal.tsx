@@ -1,26 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, Tag, Loader, Copy, Check } from "lucide-react";
+import { X, Tag, Loader, Copy, Check, Ticket, ChevronRight } from "lucide-react";
 
 interface Coupon {
-  id: string;
+  _id: string;
   code: string;
-  title: string;
-  description: string;
-  discount: number;
-  discountType: 'percentage' | 'fixed';
-  minimumAmount: number;
+  type: "PERCENTAGE" | "FIXED_AMOUNT" | "FREE_SHIPPING";
+  value: number;
+  minOrder: number;
   maxDiscount?: number;
-  expiryDate: string;
-  isActive: boolean;
+  expiresAt?: string;
+  active: boolean;
 }
 
 interface CouponModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onApplyCoupon: (coupon: Coupon) => void;
-  appliedCoupon?: Coupon | null;
+  onApplyCoupon: (coupon: any) => void;
+  appliedCoupon?: any;
   cartTotal: number;
 }
 
@@ -29,282 +27,163 @@ export default function CouponModal({
   onClose,
   onApplyCoupon,
   appliedCoupon,
-  cartTotal
+  cartTotal,
 }: CouponModalProps) {
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(false);
-  const [manualApplyLoading, setManualApplyLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState("");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-
-  // Fetch coupons from backend
-  const fetchCoupons = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('/api/coupons', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch coupons');
-      }
-
-      const data = await response.json();
-      console.log("coupon data:", data);
-      setCoupons(data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load coupons');
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Apply manual coupon code
-  const handleApplyManualCode = async () => {
-    if (!manualCode.trim()) return;
-
-    setManualApplyLoading(true);
-    setError(null);
-
-    setLoading(true);
-    try {
-      const response = await fetch('/api/coupons', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: manualCode.trim().toUpperCase(),
-          total:cartTotal
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error('Invalid coupon code');
-      }
-
-      onApplyCoupon(data.coupon);
-      setManualCode("");
-      onClose();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to apply coupon');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Copy coupon code
-  const handleCopyCode = async (code: string) => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopiedCode(code);
-      setTimeout(() => setCopiedCode(null), 2000);
-    } catch (err) {
-      console.error('Failed to copy code');
-    }
-  };
-
-  // Calculate discount amount
-  const calculateDiscount = (coupon: Coupon) => {
-    if (coupon.discountType === 'fixed') {
-      return coupon.discount;
-    } else {
-      const percentageDiscount = (cartTotal * coupon.discount) / 100;
-      return coupon.maxDiscount
-        ? Math.min(percentageDiscount, coupon.maxDiscount)
-        : percentageDiscount;
-    }
-  };
-
-  // Check if coupon is applicable
-  const isCouponApplicable = (coupon: Coupon) => {
-    return cartTotal >= coupon.minimumAmount && coupon.isActive;
-  };
 
   useEffect(() => {
     if (isOpen) {
       fetchCoupons();
-      
-      // scroll prevention
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
-      
-      return () => {
-        // Restore scroll position
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
-        window.scrollTo(0, scrollY);
-      };
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
     }
+    return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
+
+  const fetchCoupons = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/coupons");
+      const data = await response.json();
+      if (Array.isArray(data)) setCoupons(data);
+    } catch (err) {
+      console.error("Failed to fetch coupons", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
 
   if (!isOpen) return null;
 
-    return (
-    <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div 
-        className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] overflow-hidden flex flex-col my-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header - Fixed at top */}
-        <div className="flex items-center justify-between p-4 border-b bg-white rounded-t-xl flex-shrink-0">
-          <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <Tag className="text-pink-600 w-5 h-5" />
-            Available Coupons
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <X className="w-5 h-5" />
+  return (
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-[#052c22]/90 backdrop-blur-md" onClick={onClose} />
+
+      {/* Modal Container */}
+      <div className="relative bg-[#FDFCF8] w-full max-w-md rounded-[32px] overflow-hidden shadow-2xl">
+
+        {/* Gold Header */}
+        <div className="bg-[#052c22] p-6 text-[#d4af37] flex justify-between items-center border-b border-[#d4af37]/20">
+          <div>
+            <h2 className="text-xl font-serif tracking-tight">Privilege Codes</h2>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#d4af37]/60">Select your exclusive offer</p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <X size={20} />
           </button>
         </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
-          {/* Manual Code Entry */}
-          <div className="p-4 border-b bg-gray-50">
-            <h3 className="font-medium text-gray-700 mb-2">Have a coupon code?</h3>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={manualCode}
-                onChange={(e) => setManualCode(e.target.value.toUpperCase())}
-                placeholder="Enter coupon code"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
-                onKeyPress={(e) => e.key === 'Enter' && handleApplyManualCode()}
-              />
-              <button
-                onClick={handleApplyManualCode}
-                disabled={!manualCode.trim() || manualApplyLoading}
-                className="px-4 py-2 bg-pink-600 text-white text-sm font-medium rounded-md hover:bg-pink-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[60px]"
-              >
-                {manualApplyLoading ? <Loader className="animate-spin w-4 h-4" /> : 'Apply'}
-              </button>
-            </div>
-          </div>
-
-          {/* Coupons List */}
-          <div className="p-4">
-            {loading && !coupons.length ? (
-              <div className="text-center py-8">
-                <Loader className="animate-spin w-6 h-6 mx-auto mb-2 text-pink-600" />
-                <p className="text-gray-600">Loading coupons...</p>
-              </div>
-            ) : error && !coupons.length ? (
-              <div className="text-center py-8">
-                <p className="text-red-600 mb-2">Failed to load coupons</p>
-                <button
-                  onClick={fetchCoupons}
-                  className="text-pink-600 text-sm hover:underline"
-                >
-                  Try again
-                </button>
-              </div>
-            ) : coupons.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600">No coupons available</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {coupons.map((coupon) => {
-                  const isApplicable = isCouponApplicable(coupon);
-                  const isApplied = appliedCoupon?.code === coupon.code;
-                  const discount = calculateDiscount(coupon);
-
-                  return (
-                    <div
-                      key={coupon.id}
-                      className={`border rounded-lg p-3 transition-all ${
-                        isApplied
-                          ? 'border-green-500 bg-green-50 shadow-md'
-                          : isApplicable
-                          ? 'border-gray-200 hover:border-pink-300 hover:shadow-sm'
-                          : 'border-gray-200 opacity-60'
-                      }`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex-1 pr-2">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-bold text-pink-600 text-sm bg-pink-100 px-2 py-1 rounded">
-                              {coupon.code}
-                            </span>
-                            <button
-                              onClick={() => handleCopyCode(coupon.code)}
-                              className="text-gray-400 hover:text-gray-600 p-1 rounded hover:bg-gray-100 transition-colors"
-                              title="Copy code"
-                            >
-                              {copiedCode === coupon.code ? (
-                                <Check className="w-3 h-3 text-green-600" />
-                              ) : (
-                                <Copy className="w-3 h-3" />
-                              )}
-                            </button>
-                          </div>
-                          <h4 className="font-semibold text-sm text-gray-800 mb-1">
-                            {coupon.title}
-                          </h4>
-                          <p className="text-xs text-gray-600 mb-1">
-                            {coupon.description}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            Save ₹{discount.toFixed(0)} • Min order: ₹{coupon.minimumAmount}
-                          </p>
-                        </div>
-
-                        <div className="flex-shrink-0">
-                          {isApplied ? (
-                            <span className="text-green-600 text-xs font-medium bg-green-100 px-2 py-1 rounded">
-                              Applied
-                            </span>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                onApplyCoupon(coupon);
-                                onClose();
-                              }}
-                              disabled={!isApplicable}
-                              className={`text-xs font-medium px-3 py-1 rounded transition-colors ${
-                                isApplicable
-                                  ? 'bg-pink-600 text-white hover:bg-pink-700 active:bg-pink-800'
-                                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                              }`}
-                            >
-                              {isApplicable ? 'Apply' : 'Not Eligible'}
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      {!isApplicable && cartTotal < coupon.minimumAmount && (
-                        <p className="text-xs text-red-500 mt-2">
-                          Add ₹{(coupon.minimumAmount - cartTotal).toFixed(0)} more to apply this coupon
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+        {/* Manual Input Area */}
+        <div className="p-6 bg-stone-50 border-b border-stone-200">
+          <div className="relative group">
+            <input
+              type="text"
+              placeholder="ENTER CUSTOM CODE"
+              value={manualCode}
+              onChange={(e) => setManualCode(e.target.value.toUpperCase())}
+              className="w-full bg-white border-2 border-stone-200 rounded-2xl px-5 py-4 text-sm font-bold tracking-widest focus:outline-none focus:border-[#d4af37] transition-all"
+            />
+            <button
+              onClick={() => { /* Implement same logic as apply button */ }}
+              className="absolute right-2 top-2 bottom-2 bg-[#052c22] text-[#d4af37] px-6 rounded-xl text-[10px] font-black uppercase tracking-tighter hover:bg-[#0a3d30]"
+            >
+              Apply
+            </button>
           </div>
         </div>
+
+        {/* Scrollable List */}
+        <div className="max-h-[400px] overflow-y-auto p-6 space-y-4 custom-scrollbar">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader className="animate-spin text-[#d4af37] mb-4" />
+              <span className="text-[10px] uppercase tracking-widest text-stone-400">Consulting Treasury...</span>
+            </div>
+          ) : coupons.length === 0 ? (
+            <div className="text-center py-12 text-stone-400 text-xs uppercase tracking-widest">No active offers currently available</div>
+          ) : (
+            coupons.map((coupon) => {
+              const isEligible = cartTotal >= coupon.minOrder;
+              const isApplied = appliedCoupon?.code === coupon.code;
+
+              return (
+                <div
+                  key={coupon._id}
+                  className={`group relative border-2 rounded-2xl p-5 transition-all duration-300 ${isApplied ? 'border-[#d4af37] bg-[#d4af37]/5' : 'border-stone-100 bg-white hover:border-stone-200'
+                    }`}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-[#052c22] text-[#d4af37] p-2 rounded-lg">
+                        <Ticket size={16} />
+                      </div>
+                      <div>
+                        <span className="text-sm font-black tracking-widest text-[#052c22]">{coupon.code}</span>
+                        <button onClick={() => handleCopyCode(coupon.code)} className="ml-2 text-stone-400 hover:text-[#d4af37]">
+                          {copiedCode === coupon.code ? <Check size={12} /> : <Copy size={12} />}
+                        </button>
+                      </div>
+                    </div>
+                    {isApplied && (
+                      <span className="text-[9px] font-black uppercase bg-[#052c22] text-[#d4af37] px-2 py-1 rounded">Applied</span>
+                    )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-lg font-medium text-[#052c22]">
+                      {coupon.type === "PERCENTAGE" ? `${coupon.value}% Off` : `₹${coupon.value} Off`}
+                    </p>
+                    <p className="text-[11px] text-stone-500 font-medium">
+                      On orders above ₹{coupon.minOrder.toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-dashed border-stone-200 flex items-center justify-between">
+                    {!isEligible ? (
+                      <p className="text-[9px] text-red-500 font-bold uppercase tracking-widest">
+                        Add ₹{(coupon.minOrder - cartTotal).toLocaleString()} more
+                      </p>
+                    ) : (
+                      <p className="text-[9px] text-green-600 font-bold uppercase tracking-widest">Valid for your bag</p>
+                    )}
+
+                    <button
+                      disabled={!isEligible || isApplied}
+                      onClick={() => onApplyCoupon(coupon)}
+                      className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest transition-all ${isEligible && !isApplied ? 'text-[#052c22] hover:text-[#d4af37]' : 'text-stone-300'
+                        }`}
+                    >
+                      {isApplied ? 'Applied' : 'Claim Offer'} <ChevronRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 bg-stone-50 text-center">
+          <p className="text-[9px] text-stone-400 uppercase tracking-[0.3em]">Exclusively for Himalayan Wellness members</p>
+        </div>
       </div>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4af3744; border-radius: 10px; }
+      `}</style>
     </div>
   );
 }

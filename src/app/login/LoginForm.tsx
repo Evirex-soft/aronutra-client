@@ -71,7 +71,7 @@ export default function LoginForm() {
         });
 
         if (res?.error) {
-            setServerError("Invalid credentials. Please try again.");
+            setServerError(res.error);
             setLoading(false);
         } else {
             router.replace(callbackUrl);

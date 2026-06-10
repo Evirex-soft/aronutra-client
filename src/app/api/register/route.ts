@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongoose";
 import User from "@/models/User";
+import Notification from "@/models/Notification";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -25,6 +26,14 @@ export async function POST(req: Request) {
             password: hashedPassword,
             phone,
             provider: "credentials"
+        });
+
+        // Create Notification
+        await Notification.create({
+            title: "New Customer Registered",
+            message: `${newUser.name} has registered.`,
+            type: "CUSTOMER",
+            link: `/customers/${newUser._id}`,
         });
 
         return NextResponse.json({ message: "User registered successfully", userId: newUser._id }, { status: 201 });
