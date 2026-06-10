@@ -12,6 +12,18 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/admin',
+        destination: `https://aro-nutra-admin-2026.vercel.app/admin`,
+      },
+      {
+        source: '/admin/:path*',
+        destination: `https://aro-nutra-admin-2026.vercel.app/admin/:path*`,
+      },
+    ]
+  },
 };
 
 export default nextConfig;

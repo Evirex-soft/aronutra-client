@@ -98,7 +98,7 @@ export function ProductCard({ product, fromWishlist = false }: ProductCardProps)
                         src={product.images?.[0] || "/placeholder.png"}
                         alt={product.name}
                         fill
-                        className="object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+                        className="object-cover"
                     />
                 </div>
 
