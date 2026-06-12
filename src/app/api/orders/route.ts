@@ -111,23 +111,23 @@ export async function POST(req: Request) {
 
         await Promise.all(stockUpdates);
 
+        const customerEmail =
+            body.shippingAddress?.email ||
+            body.userEmail ||
+            session?.user?.email;
+
         // Send Email Notification
         try {
             const emailHtml = await render(OrderConfirmationEmail({
                 order: newOrder,
-                userEmail: session?.user?.email || body.userEmail
+                userEmail: body.shippingAddress?.email
             }));
 
-            // await resend.emails.send({
-            //     from: 'onboarding@resend.dev',
-            //     to: [session?.user?.email || body.userEmail],
-            //     subject: `Order Confirmation - #${newOrder.orderId}`,
-            //     html: emailHtml,
-            // });
 
+            // Send Email notification
             await resend.emails.send({
-                from: 'onboarding@resend.dev',
-                to: ['hareeshtj12@gmail.com'],
+                from: 'contact@aronutra.com',
+                to: [customerEmail],
                 subject: `Order Confirmation - #${newOrder.orderId}`,
                 html: emailHtml,
             });

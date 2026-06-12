@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, ShoppingBag, User, LogOut } from "lucide-react"; // Added LogOut icon
+import { Heart, ShoppingBag, User, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
@@ -9,6 +9,7 @@ import { useCart } from "@/app/contexts/CartContext";
 import { useWishlist } from "@/app/contexts/WishlistContext";
 import { useSession, signOut } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
+import NavbarSearch from "./NavbarSearch";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -153,6 +154,9 @@ const NavBar = () => {
 
           {/* RIGHT CAPSULE: Actions & Menu */}
           <div className={`pointer-events-auto ${capsuleBase} ${isScrolled && !isMenuOpen ? capsuleActive : capsuleInactive} gap-4 md:gap-8`}>
+            {/* Search component */}
+            <NavbarSearch isScrolled={isScrolled} isMenuOpen={isMenuOpen} />
+
             <div className={`flex gap-4 md:gap-6 items-center transition-all duration-500 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               <Link href="/wishlist" className={`relative transition-colors ${activeColor} hover:text-primary`}>
                 <Heart size={isScrolled && !isMenuOpen ? 18 : 20} strokeWidth={2} />
@@ -314,3 +318,7 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
+
+
+

@@ -57,24 +57,10 @@ export async function POST(req: Request) {
 
 
         // Send Email
-        // await resend.emails.send({
-        //     from: 'onboarding@resend.dev>',
-        //     to: email,
-        //     subject: 'Reset Your Membership Password',
-        //     html: `
-        //         <div style="font-family: serif; color: #052c22; padding: 20px;">
-        //             <h2>Password Reset Request</h2>
-        //             <p>Click the link below to reset your password. This link expires in 1 hour.</p>
-        //             <a href="${resetUrl}" style="background: #c5a358; color: #fff; padding: 10px 20px; text-decoration: none;">Reset Password</a>
-        //         </div>
-        //     `
-        // });
-
         try {
             await resend.emails.send({
-                from: 'onboarding@resend.dev', // Use verified domain in prod
-                to: ['hareeshtj12@gmail.com'],
-                // to: ['hareeshtj12@gmail.com'], // Use this for testing
+                from: 'contact@aronutra.com', // Use verified domain in prod
+                to: email,
                 subject: 'Action Required: Reset Your Password',
                 html: emailHtml,
             });

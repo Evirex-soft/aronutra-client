@@ -30,7 +30,7 @@ export const OrderCancelledEmail = ({
         <Body style={main}>
             <Container style={container}>
                 <Section style={headerSection}>
-                    <Text style={brandLabel}>AroNutra Collective</Text>
+                    <Text style={brandLabel}>AroNutra Wellness Private Limited</Text>
                 </Section>
 
                 <Heading style={h1}>Order Cancelled</Heading>

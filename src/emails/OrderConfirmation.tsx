@@ -29,7 +29,7 @@ export const OrderConfirmationEmail = ({
             <Container style={container}>
                 {/* Brand Header */}
                 <Section style={headerSection}>
-                    <Text style={brandLabel}>AroNutra Identity</Text>
+                    <Text style={brandLabel}>AroNutra Wellness Private Limited</Text>
                 </Section>
 
                 {/* Main Heading */}

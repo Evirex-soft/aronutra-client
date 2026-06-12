@@ -70,7 +70,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                 );
 
                 await resend.emails.send({
-                    from: "AroNutra Concierge <onboarding@resend.dev>", // Replace with your domain in prod
+                    from: 'contact@aronutra.com',
                     to: [order.shippingAddress.email],
                     subject: `Cancellation Confirmed: Order #${order.orderId}`,
                     html: emailHtml,

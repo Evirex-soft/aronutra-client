@@ -26,7 +26,7 @@ export const ResetPasswordEmail = ({
         <Body style={main}>
             <Container style={container}>
                 <Section style={headerSection}>
-                    <Text style={brandLabel}>AroNutra Identity</Text>
+                    <Text style={brandLabel}>AroNutra Wellness Private Limited</Text>
                 </Section>
                 <Heading style={h1}>Password Reset Protocol</Heading>
                 <Text style={text}>

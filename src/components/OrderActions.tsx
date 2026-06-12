@@ -44,7 +44,7 @@ export default function OrderActions({ order }: { order: any }) {
                 {canCancel && (
                     <button
                         onClick={() => { setActionType("CANCEL"); setIsOpen(true); }}
-                        className="group flex items-center gap-2 px-5 py-2 rounded-full border border-red-400/20 text-red-400 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-red-400 hover:text-white transition-all duration-500"
+                        className="group flex items-center gap-2 px-5 py-2 mt-5 rounded-full border border-red-400/20 text-red-400 text-[9px] font-black uppercase tracking-[0.2em] hover:bg-red-400 hover:text-white transition-all duration-500"
                     >
                         <X size={12} className="group-hover:rotate-90 transition-transform duration-500" />
                         Cancel Order
