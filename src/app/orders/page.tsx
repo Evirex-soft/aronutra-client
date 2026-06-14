@@ -92,7 +92,12 @@ export default async function AllOrdersPage({
                                         <div className="flex items-center justify-between md:justify-end gap-8">
                                             <div className="hidden lg:flex -space-x-3">
                                                 {order.items.slice(0, 3).map((item: any, i: number) => (
-                                                    <img key={i} src={item.image} className="w-8 h-8 rounded-full border-2 border-[#052c22] object-cover" alt="item" />
+                                                    <img
+                                                        key={`${item.productId}-${item.selectedVariantId || "default"}`}
+                                                        src={item.image}
+                                                        className="w-8 h-8 rounded-full border-2 border-[#052c22] object-cover"
+                                                        alt={item.name}
+                                                    />
                                                 ))}
                                                 {order.items.length > 3 && (
                                                     <div className="w-8 h-8 rounded-full border-2 border-[#052c22] bg-white/10 flex items-center justify-center text-[8px]">+{order.items.length - 3}</div>

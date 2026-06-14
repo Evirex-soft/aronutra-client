@@ -51,7 +51,20 @@ export const OrderConfirmationEmail = ({
                     {order.items.map((item: any, index: number) => (
                         <Row key={index} style={itemRow}>
                             <Column style={{ width: "70%" }}>
-                                <Text style={itemName}>{item.name} <span style={itemQty}>x {item.quantity}</span></Text>
+                                <Text style={itemName}>
+                                    {item.name}
+
+                                    {item.selectedWeight && (
+                                        <>
+                                            {" "}
+                                            • {item.selectedWeight}
+                                        </>
+                                    )}
+
+                                    <span style={itemQty}>
+                                        {" "}x {item.quantity}
+                                    </span>
+                                </Text>
                             </Column>
                             <Column style={{ width: "30%", textAlign: "right" as const }}>
                                 <Text style={itemPrice}>₹{item.sellingPrice * item.quantity}</Text>

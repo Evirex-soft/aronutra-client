@@ -66,6 +66,13 @@ export default async function OrderSuccessPage({ params }: { params: Promise<{ o
                                         </div>
                                         <div className="flex-grow min-w-0">
                                             <h3 className="text-sm md:text-base font-serif text-white/90 print:text-black truncate">{item.name}</h3>
+                                            {item.selectedWeight && (
+                                                <div className="mt-1">
+                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-[#d4af37]/10 text-[#d4af37] text-[9px] font-bold uppercase tracking-widest">
+                                                        {item.selectedWeight}
+                                                    </span>
+                                                </div>
+                                            )}
                                             <p className="text-[10px] text-white/40 print:text-gray-500 font-bold uppercase tracking-tighter mt-0.5">
                                                 Qty: {item.quantity} • ₹{item.sellingPrice.toLocaleString()}
                                             </p>

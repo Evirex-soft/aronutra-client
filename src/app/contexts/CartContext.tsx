@@ -7,6 +7,9 @@ import { STORAGE_KEYS } from "@/constants/storage";
 
 export interface CartItem extends IProduct {
     quantity: number;
+
+    selectedVariantId?: string;
+    selectedWeight?: string;
 }
 
 
@@ -23,7 +26,7 @@ export interface Coupon {
 interface CartContextType {
     cart: CartItem[];
     appliedCoupon: Coupon | null;
-    addToCart: (product: IProduct, quantity?: number) => void;
+    addToCart: (product: CartItem, quantity?: number) => void;
     removeFromCart: (productId: string) => void;
     updateQuantity: (productId: string, quantity: number) => void;
     getCartCount: () => number;
@@ -92,16 +95,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
 
-    const addToCart = (product: IProduct, quantity: number = 1) => {
+    const addToCart = (product: CartItem, quantity: number = 1) => {
         if (product.stockQuantity <= 0) {
             toast.error(`Sorry, ${product.name} is currently out of stock.`);
             return;
         }
 
         setCart((prevCart) => {
-            const existingItem = prevCart.find(
-                (item) => item._id === product._id
-            );
+            const existingItem = prevCart.find(item => {
+                if (product.selectedVariantId) {
+                    return (
+                        item._id === product._id &&
+                        item.selectedVariantId === product.selectedVariantId
+                    );
+                }
+
+                return item._id === product._id;
+            });
 
             // Product already exists in cart
             if (existingItem) {
@@ -118,11 +128,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                     `${quantity} more ${product.name} added to cart!`
                 );
 
-                return prevCart.map((item) =>
-                    item._id === product._id
+                return prevCart.map((item) => {
+                    const isSameItem = product.selectedVariantId
+                        ? (
+                            item._id === product._id &&
+                            item.selectedVariantId === product.selectedVariantId
+                        )
+                        : item._id === product._id;
+
+                    return isSameItem
                         ? { ...item, quantity: newQuantity }
-                        : item
-                );
+                        : item;
+                });
             }
 
             // New product
@@ -139,29 +156,70 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const removeFromCart = (productId: string) => {
-        setCart((prevCart) => {
-            const itemToRemove = prevCart.find(item => item._id === productId);
+    const removeFromCart = (
+        productId: string,
+        variantId?: string
+    ) => {
+        setCart(prev => {
+
+            const itemToRemove = prev.find(item =>
+                variantId
+                    ? (
+                        item._id === productId &&
+                        item.selectedVariantId === variantId
+                    )
+                    : item._id === productId
+            );
+
             if (itemToRemove) {
-                toast.error(`${itemToRemove.name} removed from cart`);
+                toast.info(
+                    `${itemToRemove.name} removed from cart`
+                );
             }
-            return prevCart.filter((item) => item._id !== productId);
+
+            return prev.filter(item => {
+                if (variantId) {
+                    return !(
+                        item._id === productId &&
+                        item.selectedVariantId === variantId
+                    );
+                }
+
+                return item._id !== productId;
+            });
         });
     };
 
-    const updateQuantity = (productId: string, quantity: number) => {
-        setCart((prevCart) =>
-            prevCart.map((item) => {
-                if (item._id === productId) {
-                    const newQty = Math.max(1, quantity);
-                    // STRICT STOCK CHECK
-                    if (newQty > item.stockQuantity) {
-                        toast.warning(`Maximum available stock (${item.stockQuantity}) reached.`);
-                        return { ...item, quantity: item.stockQuantity };
-                    }
-                    return { ...item, quantity: newQty };
+    const updateQuantity = (productId: string, quantity: number, variantId?: string) => {
+        setCart(prev =>
+            prev.map(item => {
+
+                const isTarget = variantId
+                    ? (
+                        item._id === productId &&
+                        item.selectedVariantId === variantId
+                    )
+                    : item._id === productId;
+
+                if (!isTarget) return item;
+
+                const newQty = Math.max(1, quantity);
+
+                if (newQty > item.stockQuantity) {
+                    toast.warning(
+                        `Maximum available stock (${item.stockQuantity}) reached`
+                    );
+
+                    return {
+                        ...item,
+                        quantity: item.stockQuantity
+                    };
                 }
-                return item;
+
+                return {
+                    ...item,
+                    quantity: newQty
+                };
             })
         );
     };
@@ -185,8 +243,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     const getCartDiscount = () => getCartOriginalTotal() - getCartTotal();
 
+    const extractWeight = (weight: string) =>
+        Number(weight.replace("g", ""));
+
     const getCartWeight = () =>
-        cart.reduce((total, item) => total + (item.weight! * item.quantity), 0);
+        cart.reduce((total, item) => {
+
+            const weight =
+                item.selectedWeight
+                    ? extractWeight(item.selectedWeight)
+                    : item.weight || 0;
+
+            return total + weight * item.quantity;
+
+        }, 0);
 
 
     const applyCoupon = (coupon: Coupon) => {

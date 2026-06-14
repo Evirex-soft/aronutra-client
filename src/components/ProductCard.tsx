@@ -3,72 +3,78 @@
 import React, { useState, MouseEvent } from "react";
 import { IProduct } from "@/types/product";
 import { useWishlist } from "@/app/contexts/WishlistContext";
-import { useCart } from "@/app/contexts/CartContext";
 import Link from "next/link";
 import { Plus, Minus, Heart, ArrowRight } from "lucide-react";
 import Image from "next/image";
-
 
 interface ProductCardProps {
     product: IProduct;
     fromWishlist?: boolean;
 }
 
-// Map slug to your actual images or keep the dynamic logic
-const getProductImage = (img: string) => img || "/images/honey.png";
+export function ProductCard({ product }: ProductCardProps) {
+    const { toggleWishlist, isProductInWishlist } = useWishlist();
 
-export function ProductCard({ product, fromWishlist = false }: ProductCardProps) {
-    const { removeFromWishlist, toggleWishlist, isProductInWishlist } = useWishlist();
-    const { addToCart } = useCart();
+    // Logic to handle Variants vs Fixed Product
+    const hasVariants = product.variants && product.variants.length > 0;
 
-    const [quantity, setQuantity] = useState(1); // 1 unit = 50gm
+    // State: If variants exist, we track the index. If not, we track quantity.
+    const [variantIndex, setVariantIndex] = useState(0);
+    const [quantity, setQuantity] = useState(1);
 
-    const baseWeight = product.weight || 50;
-    const currentWeight = quantity * baseWeight;
-    const currentPrice = quantity * product.sellingPrice;
+    // 1. Determine Display Weight
+    const displayWeight = hasVariants
+        ? product.variants[variantIndex].weight  // e.g., "250g"
+        : `${(product.weight || 0) * quantity}G`; // e.g., "600G"
 
-    const isInWishlist = product._id
-        ? isProductInWishlist(product._id)
-        : false;
+    // 2. Determine Display Price
+    const displayPrice = hasVariants
+        ? product.variants[variantIndex].sellingPrice
+        : (product.sellingPrice || 0) * quantity;
 
-
-    // const handleCartClick = (e: MouseEvent<HTMLButtonElement>) => {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-    //     addToCart(product, quantity / 400); // Assuming 400g is 1 unit
-    //     if (fromWishlist) {
-    //         removeFromWishlist(product._id!);
-    //     }
-    //     setIsAdded(true);
-    //     setTimeout(() => setIsAdded(false), 2000);
-    // };
+    const isInWishlist = product._id ? isProductInWishlist(product._id.toString()) : false;
 
     const handleWishlistToggle = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         e.preventDefault();
-        if (product._id) {
-            toggleWishlist(product._id);
-        }
+        if (product._id) toggleWishlist(product._id.toString());
     };
 
     const handleAdjustment = (e: MouseEvent<HTMLButtonElement>, action: 'add' | 'sub') => {
         e.stopPropagation();
         e.preventDefault();
-        if (action === 'add') {
-            setQuantity(q => q + 1);
+
+        if (hasVariants) {
+            // Cycle through available variants (e.g., 250g -> 500g)
+            if (action === 'add') {
+                setVariantIndex((prev) => Math.min(prev + 1, product.variants.length - 1));
+            } else {
+                setVariantIndex((prev) => Math.max(0, prev - 1));
+            }
         } else {
-            setQuantity(q => Math.max(1, q - 1));
+            // Fallback: Multiplier logic for products without variants
+            if (action === 'add') {
+                setQuantity((q) => q + 1);
+            } else {
+                setQuantity((q) => Math.max(1, q - 1));
+            }
         }
-    }
+    };
+
+    // URL Construction: Pass the weight/variant selected to the detail page
+    const detailUrl = `/products/${product.slug}?${hasVariants
+            ? `weight=${product.variants[variantIndex].weight}`
+            : `qty=${quantity}`
+        }`;
 
     return (
-        <Link href={`/products/${product.slug}?qty=${quantity}`} className="group block h-full">
-            <div className="relative flex h-full flex-col items-center bg-[#1b4332] rounded-[2.5rem] p-8 transition-all duration-700 hover:bg-[#0d3d32] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden border border-white/5">
+        <Link href={detailUrl} className="group block h-full">
+            <div className="relative flex h-full flex-col items-center bg-[#1b4332] rounded-[2.5rem] p-8 transition-all duration-700 hover:bg-[#0d3d32] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] border border-white/5 overflow-hidden">
 
                 {/* Top Tag */}
                 <div className="absolute top-6 left-8">
                     <span className="bg-[#b4d3b2] text-[#052c22] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">
-                        Limited
+                        {product.productType === "PACKAGE" ? "Special Pack" : "Pure Natural"}
                     </span>
                 </div>
 
@@ -98,14 +104,15 @@ export function ProductCard({ product, fromWishlist = false }: ProductCardProps)
                         src={product.images?.[0] || "/placeholder.png"}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="object-contain"
+                        sizes="200px"
                     />
                 </div>
 
                 {/* Interactive Area */}
                 <div className="w-full mt-auto flex flex-col items-center gap-6">
 
-                    {/* Weight & Price Preview */}
+                    {/* Weight & Price Selector */}
                     <div className="flex items-center justify-between w-full bg-white/5 rounded-2xl p-2 border border-white/10">
                         <button
                             onClick={(e) => handleAdjustment(e, 'sub')}
@@ -115,9 +122,11 @@ export function ProductCard({ product, fromWishlist = false }: ProductCardProps)
                         </button>
 
                         <div className="text-center">
-                            <span className="text-sm font-bold text-white block leading-none">{currentWeight}G</span>
+                            <span className="text-sm font-bold text-white block uppercase leading-none">
+                                {displayWeight}
+                            </span>
                             <span className="text-[9px] text-[#d4af37] font-black tracking-widest uppercase">
-                                ₹{currentPrice}
+                                ₹{displayPrice.toLocaleString()}
                             </span>
                         </div>
 
@@ -129,14 +138,14 @@ export function ProductCard({ product, fromWishlist = false }: ProductCardProps)
                         </button>
                     </div>
 
-                    {/* Shop Now Button (Navigates to Detail Page) */}
+                    {/* Shop Now Button */}
                     <div className="w-full py-4 rounded-full text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 flex items-center justify-center gap-3 bg-white text-[#052c22] group-hover:bg-[#d4af37] shadow-xl">
-                        Shop Now <ArrowRight size={14} />
+                        View Details <ArrowRight size={14} />
                     </div>
 
                     {/* Subtle Subtext */}
-                    <p className="text-white/20 text-[7px] font-bold tracking-widest uppercase">
-                        {product.harvestRegion || "Nature"}
+                    <p className="text-white/20 text-[7px] font-bold tracking-widest uppercase text-center px-4">
+                        {product.harvestRegion || "Sourced from Nature"}
                     </p>
                 </div>
             </div>

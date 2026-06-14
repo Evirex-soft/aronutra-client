@@ -130,7 +130,7 @@ const NavBar = () => {
   const logoFilter = isOnDarkBackground ? "brightness-100" : "brightness-0";
 
   const capsuleBase = "transition-all duration-700 ease-in-out flex items-center shadow-[0_20px_40px_-15px_rgba(0, 0, 0, 0.1)]";
-  const capsuleActive = "h-14 bg-white/80 backdrop-blur-xl rounded-full px-6 md:px-8";
+  const capsuleActive = "h-14 bg-white/80 backdrop-blur-xl rounded-full px-3 md:px-8";
   const capsuleInactive = "h-20 bg-transparent px-0";
 
   return (
@@ -140,7 +140,7 @@ const NavBar = () => {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-12">
           {/* LEFT CAPSULE: Logo */}
-          <div className={`pointer-events-auto ${capsuleBase} ${isScrolled && !isMenuOpen ? capsuleActive : capsuleInactive}`}>
+          <div className={`pointer-events-auto min-w-0 ${capsuleBase} ${isScrolled && !isMenuOpen ? capsuleActive : capsuleInactive} gap-2 md:gap-8`}>
             <Link href="/" className="relative z-210 shrink-0">
               <Image
                 src="/images/logo.png"
@@ -172,10 +172,13 @@ const NavBar = () => {
               </Link>
             </div>
 
-            <div className={`h-4 w-px bg-current opacity-20 transition-all duration-500 ${isMenuOpen ? 'opacity-0' : 'opacity-20'}`} />
+            <div className={`h-4 w-px bg-current opacity-20 transition-all duration-500 max-md:hidden ${isMenuOpen ? 'opacity-0' : 'opacity-20'}`} />
 
-            <div className={`flex items-center transition-all duration-500 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <Link href={session ? "/profile" : "/login"} className={`flex items-center gap-2 group transition-colors ${activeColor} hover:text-[#c5a358]`}>
+            <div className={`max-md:hidden flex items-center transition-all duration-500 ${isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <Link
+                href={session ? "/profile" : "/login"}
+                className={`flex items-center gap-2 group transition-colors ${activeColor} hover:text-[#c5a358]`}
+              >
                 <User size={isScrolled && !isMenuOpen ? 18 : 20} strokeWidth={1.5} />
                 <span className={`hidden lg:block text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 ${isScrolled && !isMenuOpen ? "max-w-0 overflow-hidden opacity-0" : "max-w-32 opacity-100"}`}>
                   {session ? `Hi, ${session.user?.name}` : "Sign In"}

@@ -1,5 +1,12 @@
 import { Types } from "mongoose";
 
+export interface IVariant {
+    weight: string; // e.g., "250g", "500g"
+    mrp: number;
+    sellingPrice: number;
+    stockQuantity: number;
+}
+
 export interface IProduct {
     _id?: string;
     name: string;
@@ -7,7 +14,7 @@ export interface IProduct {
     sku?: string;
     barcode?: string;
     brand: string;
-    category: Types.ObjectId; // ID of the category
+    category: Types.ObjectId;
     productType?: string;
     status: "DRAFT" | "ACTIVE" | "INACTIVE" | "ARCHIVED";
 
@@ -18,22 +25,29 @@ export interface IProduct {
     ingredients?: string;
     usageInstructions?: string;
     storageInstructions?: string;
-    harvestRegion?: string;
 
-    // Pricing & Inventory
+    // Variants (Optional - for products with different sizes)
+    variants: IVariant[];
+
+    // Pricing & Inventory (Top-level/Default)
     mrp: number;
     sellingPrice: number;
     costPrice?: number;
     taxPercentage: number;
-    stockQuantity: number; // Added this as it's usually needed
+    stockQuantity: number;
 
     // Attributes
-    weight?: number;
+    weight?: number; // Numeric weight in grams for shipping
     packageType?: string;
+    harvestRegion?: string;
+    floralSource?: string;
+    harvestSeason?: string;
+    purityPercentage?: number;
     isOrganic: boolean;
+    certification?: string;
 
     // Media
-    images: string[]; // S3 URLs
+    images: string[];
 
     // SEO
     seo: {
@@ -41,6 +55,8 @@ export interface IProduct {
         metaDescription?: string;
         focusKeyword?: string;
     };
-    createdAt?: string;
-    updatedAt?: string;
+
+    isFeatured: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

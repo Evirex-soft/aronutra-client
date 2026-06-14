@@ -36,21 +36,67 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                     await razorpay.payments.refund(order.paymentDetails.razorpay_payment_id, {
                         notes: { reason: reason || "User cancelled order" }
                     });
-                    order.paymentDetails.status = "Refunded";
+                    refundInitiated = true;
+
                 } catch (rzpError: any) {
+
                     await Notification.create({
                         title: "Action Required: Refund Failed!",
                         message: `Refund for Order #${order.orderId} failed. Please process manually via Razorpay Dashboard.`,
                         type: "PAYMENT", // Using your PAYMENT enum type
                         link: `/orders/${order._id}`,
                     });
+                    return NextResponse.json(
+                        {
+                            error: "Refund failed. Please try again later."
+                        },
+                        {
+                            status: 500
+                        }
+                    );
                 }
             }
 
             // Restore Stock
-            const stockUpdates = order.items.map((item: any) =>
-                Product.findByIdAndUpdate(item.productId, { $inc: { stockQuantity: item.quantity } })
-            );
+            const stockUpdates = order.items.map(async (item: any) => {
+
+                // Variant Product
+                if (item.selectedVariantId) {
+
+                    const product = await Product.findById(
+                        item.productId
+                    );
+
+                    if (!product) return;
+
+                    const variant = product.variants.id(
+                        item.selectedVariantId
+                    );
+
+                    if (!variant) {
+                        throw new Error(
+                            `Variant ${item.selectedVariantId} not found for ${product.name}`
+                        );
+                    }
+
+                    variant.stockQuantity += item.quantity;
+
+                    await product.save();
+
+                    return;
+                }
+
+                // Package Product
+                await Product.findByIdAndUpdate(
+                    item.productId,
+                    {
+                        $inc: {
+                            stockQuantity: item.quantity
+                        }
+                    }
+                );
+            });
+
             await Promise.all(stockUpdates);
 
             order.status = "Cancelled";
@@ -82,7 +128,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             //  CREATE ADMIN NOTIFICATION
             await Notification.create({
                 title: "Order Cancelled",
-                message: `Order #${order.orderId} was cancelled by the user. Reason: ${reason}. ${order.paymentDetails.method === 'razorpay' ? 'Refund initiated.' : ''}`,
+                message: `Order #${order.orderId} was cancelled by the user. Reason: ${reason}. ${refundInitiated ? "Refund initiated." : ""
+                    }`,
                 type: "ORDER",
                 link: `/orders/${order._id}`,
             });

@@ -56,7 +56,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                                 <div className="space-y-6">
                                     {order.items.map((item: any, idx: number) => (
                                         <Link
-                                            key={idx}
+                                            key={`${item.productId}-${item.selectedVariantId || "default"}`}
                                             href={`/products/${item.slug}`}
                                             className="flex gap-6 items-center group cursor-pointer"
                                         >
@@ -69,9 +69,22 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                                             </div>
                                             <div className="flex-1">
                                                 <h3 className="font-serif italic text-lg group-hover:text-[#d4af37] transition-colors">{item.name}</h3>
-                                                <div className="flex gap-4 mt-1">
-                                                    <p className="text-[10px] uppercase tracking-widest text-white/30">Qty: {item.quantity}</p>
-                                                    <p className="text-[10px] uppercase tracking-widest text-white/30">Wt: {item.weight}g</p>
+                                                <div className="flex gap-4 mt-2 items-center flex-wrap">
+                                                    <p className="text-[10px] uppercase tracking-widest text-white/30">
+                                                        Qty: {item.quantity}
+                                                    </p>
+
+                                                    {item.selectedWeight ? (
+                                                        <span className="px-2 py-1 rounded-md bg-[#d4af37]/10 text-[#d4af37] text-[9px] font-bold uppercase tracking-widest">
+                                                            {item.selectedWeight}
+                                                        </span>
+                                                    ) : (
+                                                        item.weight && (
+                                                            <p className="text-[10px] uppercase tracking-widest text-white/30">
+                                                                Wt: {item.weight}g
+                                                            </p>
+                                                        )
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="text-right">

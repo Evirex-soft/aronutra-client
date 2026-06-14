@@ -1,8 +1,8 @@
 import { getProductBySlug, getProducts } from "@/lib/getProducts"
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import { FaStar, FaLeaf, FaCheckCircle } from "react-icons/fa"
-import { Truck, RotateCcw, ShieldCheck, Award, MapPin, Droplets, Box } from "lucide-react"
+import { FaStar, FaLeaf } from "react-icons/fa"
+import { Truck, RotateCcw, ShieldCheck, Award, MapPin, Droplets } from "lucide-react"
 import ReviewCard from "./ReviewCard";
 import reviewsData from "@/lib/reviewsData";
 import ProductActions from "./ProductActions";
@@ -14,64 +14,57 @@ export default async function ProductDetailPage({
   searchParams
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ qty?: string }>
+  searchParams: Promise<{ weight?: string }>
 }) {
   const resolvedParams = await params;
   const resolvedSearch = await searchParams;
-  const allProducts = await getProducts();
 
-  // 1. Handle Slug & Data
-  const isBundlePage = resolvedParams.slug === "discovery-collection";
+  // 1. Fetch data from DB
+  const rawProduct = await getProductBySlug(resolvedParams.slug);
+  if (!rawProduct) notFound();
 
-  let product;
-  if (isBundlePage) {
-    // Manually create the bundle object
-    const bundlePrice = allProducts.slice(0, 12).reduce((sum, p) => sum + p.sellingPrice, 0);
-    const bundleMrp = allProducts.slice(0, 12).reduce((sum, p) => sum + p.mrp, 0);
+  // Serialize to plain JSON for Client Components
+  const product = JSON.parse(JSON.stringify(rawProduct));
+  const allProducts = JSON.parse(JSON.stringify(await getProducts()));
 
-    product = {
-      _id: "bundle-001",
-      slug: "discovery-collection",
-      name: "The Discovery Collection",
-      sellingPrice: bundlePrice,
-      productType: "BUNDLE",
-      mrp: bundleMrp,
-      weight: 600,
-      images: ["/images/packet.png"],
-      shortDescription: "Our signature treasury. 12 distinct monofloral honeys, each reflecting the soul of its origin.",
-      stockQuantity: 15,
-      purityPercentage: 100
-    };
+  const isPackage = product.productType === "PACKAGE";
+  const hasVariants = product.variants && product.variants.length > 0;
 
+  // 2. Logic: Determine active data source
+  // If Single Product (has variants): use selected weight from URL or first variant
+  // If Package: use top-level fields
+  const activeVariant = hasVariants
+    ? (product.variants.find((v: any) => v.weight === resolvedSearch.weight) || product.variants[0])
+    : null;
 
-  } else {
-    const prod = await getProductBySlug(resolvedParams.slug);
-    if (!prod) notFound();
-    product = JSON.parse(JSON.stringify(prod));
-  }
+  const displayPrice = activeVariant ? activeVariant.sellingPrice : product.sellingPrice;
+  const displayMrp = activeVariant ? activeVariant.mrp : product.mrp;
+  const displayWeight = activeVariant ? activeVariant.weight : `${product.weight}g`;
+  const displayStock = activeVariant ? activeVariant.stockQuantity : product.stockQuantity;
 
-  const initialQty = parseInt(resolvedSearch.qty || "1");
   const listify = (str: string) => str ? str.split('\n').filter(line => line.trim() !== '') : [];
 
   return (
     <div className="min-h-screen bg-[#052c22] text-[#FDFCF8] font-sans">
       <main className="max-w-[1400px] mx-auto px-6 lg:px-20 pt-32 pb-32">
+
+        {/* TOP SECTION: IMAGE & ACTIONS */}
         <div className="grid lg:grid-cols-12 gap-16 xl:gap-24">
 
           {/* LEFT: IMAGE GALLERY */}
-          <div className="lg:col-span-7 space-y-8">
+          <div className="lg:col-span-7">
             <div className="relative aspect-[4/3] w-full rounded-[2rem] bg-white overflow-hidden flex items-center justify-center shadow-2xl">
               <Image
                 src={product.images?.[0] || "/placeholder.png"}
                 alt={product.name}
                 width={1000}
                 height={1000}
-                className="relative z-10 object-contain p-2 w-full h-full"
+                className="relative z-10 object-contain p-8 w-full h-full hover:scale-105 transition-transform duration-700"
                 priority
               />
               <div className="absolute top-10 left-10">
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] bg-[#d4af37] text-[#052c22] px-4 py-2 rounded-sm">
-                  {isBundlePage ? "Signature Set" : `${product.purityPercentage}% Pure`}
+                  {isPackage ? "Signature Set" : `${product.purityPercentage || 100}% Pure`}
                 </span>
               </div>
             </div>
@@ -83,7 +76,7 @@ export default async function ProductDetailPage({
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-px bg-[#d4af37]"></div>
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#d4af37]">
-                  {isBundlePage ? "The Complete Ritual" : product.floralSource}
+                  {isPackage ? "The Complete Ritual" : product.floralSource || "Pure Monofloral"}
                 </span>
               </div>
               <h1 className="text-5xl font-serif leading-tight mb-4">{product.name}</h1>
@@ -96,39 +89,39 @@ export default async function ProductDetailPage({
             </header>
 
             <div className="mb-10">
-              <div className="flex items-baseline gap-4 mb-4">
-                <span className="text-4xl font-light">₹{product.sellingPrice}</span>
-                {product.mrp > product.sellingPrice && (
-                  <span className="text-xl text-white/20 line-through">₹{product.mrp}</span>
+              <div className="flex items-baseline gap-4 mb-2">
+                <span className="text-4xl font-light">₹{displayPrice.toLocaleString()}</span>
+                {displayMrp > displayPrice && (
+                  <span className="text-xl text-white/20 line-through">₹{displayMrp.toLocaleString()}</span>
                 )}
               </div>
-              <p className="text-white/70 font-light leading-relaxed italic text-lg">
-                &quot;{product.shortDescription}&quot;
-              </p>
+              <p className="text-white/70 font-light leading-relaxed italic text-lg">&quot;{product.shortDescription}&quot;</p>
             </div>
 
-            {/* Product Specific Specs */}
-            {!isBundlePage ? (
-              <div className="grid grid-cols-2 gap-6 mb-10 p-6 bg-white/5 rounded-xl border border-white/10">
-                <div className="space-y-1">
-                  <p className="text-[10px] uppercase text-[#d4af37] font-bold tracking-tighter">Harvest Region</p>
-                  <p className="text-sm flex items-center gap-2"><MapPin size={14} /> {product.harvestRegion}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] uppercase text-[#d4af37] font-bold tracking-tighter">Floral Source</p>
-                  <p className="text-sm flex items-center gap-2"><Droplets size={14} /> {product.floralSource}</p>
-                </div>
+            {/* Specs Grid */}
+            <div className="grid grid-cols-2 gap-6 mb-10 p-6 bg-white/5 rounded-xl border border-white/10">
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase text-[#d4af37] font-bold tracking-tighter">Harvest Region</p>
+                <p className="text-sm flex items-center gap-2"><MapPin size={14} /> {product.harvestRegion}</p>
               </div>
-            ) : (
-              <div className="mb-10 p-6 bg-[#d4af37]/10 rounded-xl border border-[#d4af37]/20">
-                <p className="text-[10px] uppercase text-[#d4af37] font-bold tracking-widest mb-2">Package Details</p>
-                <p className="text-sm text-white/70">Includes 12 distinct artisanal jars (50g each). Perfect for discovery and gifting.</p>
+              <div className="space-y-1">
+                <p className="text-[10px] uppercase text-[#d4af37] font-bold tracking-tighter">Floral Source</p>
+                <p className="text-sm flex items-center gap-2"><Droplets size={14} /> {product.floralSource}</p>
               </div>
-            )}
+            </div>
 
-            <ProductActions product={product as any} initialQuantity={initialQty} />
+            {/* REAL Product Actions - Handles variant switching and quantity */}
+            <ProductActions
+              product={product}
+              activeVariant={activeVariant}
+              displayWeight={displayWeight}
+              displayPrice={displayPrice}
+              displayStock={displayStock}
+            />
 
-            {/* Standard Features */}
+
+
+            {/* Standard Trust Badges */}
             <div className="grid grid-cols-2 gap-6 mt-12">
               {[{ icon: <ShieldCheck size={18} />, text: "100% Natural" }, { icon: <Award size={18} />, text: "Lab Tested" }, { icon: <Truck size={18} />, text: "Free Shipping" }, { icon: <RotateCcw size={18} />, text: "Pure Quality" }].map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
@@ -140,71 +133,69 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        {/* BOTTOM SECTION: CONDITIONAL */}
-        {isBundlePage ? (
-          /* BUNDLE VIEW: SHOW THE 12 HONEYS */
+        {/* MIDDLE SECTION: BUNDLE CONTENTS (Only for Packages) */}
+        {isPackage && (
           <div className="mt-40 border-t border-white/10 pt-24">
             <div className="text-center mb-20">
-              <h2 className="text-4xl md:text-6xl font-serif text-[#d4af37]">Inside the Box</h2>
-              <p className="mt-4 text-white/40 uppercase tracking-widest text-xs font-bold">12 Monofloral Varieties • 50g Each</p>
+              <h2 className="text-4xl md:text-6xl font-serif text-[#d4af37]">Inside the Collection</h2>
+              <p className="mt-4 text-white/40 uppercase tracking-widest text-xs font-bold">Varieties included in this treasury</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
-              {allProducts.slice(0, 12).map((honey) => (
+              {allProducts.filter((p: any) => p.productType === "SINGLE").slice(0, 12).map((honey: any) => (
                 <div key={honey._id} className="group flex flex-col items-center text-center space-y-4">
-                  <div className="w-24 h-24 bg-white rounded-full p-4 flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl">
-                    <img src={honey.images[0]} alt={honey.name} className="w-full h-full object-contain" />
+                  <div className="w-24 h-24 bg-white rounded-full p-4 flex items-center justify-center transition-transform group-hover:scale-110 shadow-xl overflow-hidden">
+                    <Image src={honey.images?.[0] || "/placeholder.png"} alt={honey.name} width={100} height={100} className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-white/80">{honey.name.replace('Aronutra ', '')}</p>
-                    <p className="text-[9px] text-[#d4af37] font-bold">50G</p>
+                    <p className="text-[9px] text-[#d4af37] font-bold">50G JAR</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        ) : (
-          /* INDIVIDUAL VIEW: SHOW BENEFITS & INGREDIENTS */
-          <div className="mt-32 grid md:grid-cols-3 gap-16 border-t border-white/10 pt-20">
-            <div>
-              <h3 className="text-[#d4af37] font-serif text-2xl mb-6">Health Benefits</h3>
-              <ul className="space-y-4">
-                {listify(product.benefits).map((benefit: string, i: number) => (
-                  <li key={i} className="flex gap-3 text-sm text-white/70 leading-relaxed">
-                    <FaLeaf className="text-[#d4af37] mt-1 shrink-0" size={12} />
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-[#d4af37] font-medium text-2xl mb-6">Usage & Ingredients</h3>
-              <div className="space-y-8">
-                <div>
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Ingredients</p>
-                  <p className="text-sm text-white/70">{product.ingredients}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">How to use</p>
-                  <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">{product.usageInstructions}</p>
-                </div>
+        )}
+
+        {/* LOWER SECTION: BENEFITS & USAGE (Always visible) */}
+        <div className="mt-32 grid md:grid-cols-3 gap-16 border-t border-white/10 pt-20">
+          <div>
+            <h3 className="text-[#d4af37] font-serif text-2xl mb-6">Health Benefits</h3>
+            <ul className="space-y-4">
+              {listify(product.benefits).map((benefit: string, i: number) => (
+                <li key={i} className="flex gap-3 text-sm text-white/70 leading-relaxed">
+                  <FaLeaf className="text-[#d4af37] mt-1 shrink-0" size={12} />
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-[#d4af37] font-medium text-2xl mb-6">Usage & Purity</h3>
+            <div className="space-y-8">
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Ingredients</p>
+                <p className="text-sm text-white/70">{product.ingredients || "100% Pure Honey"}</p>
               </div>
-            </div>
-            <div>
-              <h3 className="text-[#d4af37] font-serif text-2xl mb-6">Storage</h3>
-              <p className="text-sm text-white/70 mb-8 leading-relaxed italic">{product.storageInstructions}</p>
-              <div className="bg-[#d4af37]/10 p-6 rounded-lg border border-[#d4af37]/20">
-                <p className="text-[#d4af37] text-xs font-bold uppercase mb-2">Purity Guarantee</p>
-                <p className="text-sm text-white/60">This product is {product.purityPercentage}% pure. {product.isOrganic ? "Certified Organic." : "Natural and minimally processed."}</p>
+              <div>
+                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Usage Instructions</p>
+                <p className="text-sm text-white/70 leading-relaxed whitespace-pre-line">{product.usageInstructions}</p>
               </div>
             </div>
           </div>
-        )}
+          <div>
+            <h3 className="text-[#d4af37] font-serif text-2xl mb-6">Storage</h3>
+            <p className="text-sm text-white/70 mb-8 leading-relaxed italic">{product.storageInstructions}</p>
+            <div className="bg-[#d4af37]/10 p-6 rounded-lg border border-[#d4af37]/20">
+              <p className="text-[#d4af37] text-xs font-bold uppercase mb-2">Certification</p>
+              <p className="text-sm text-white/60">{product.certification || "Lab tested for 100% purity. No added sugar or preservatives."}</p>
+            </div>
+          </div>
+        </div>
 
-        {/* REVIEWS SECTION  */}
+        {/* REVIEWS SECTION */}
         <section className="mt-48 pt-24 border-t border-white/5">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-serif text-white">Community Voices</h2>
-            <p className="mt-5 max-w-2xl mx-auto text-white/40 leading-relaxed">Authentic experiences shared by honey lovers who have made AroNutra part of their daily wellness ritual.</p>
+            <h2 className="text-4xl md:text-6xl font-serif text-white">Customer Reviews</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {reviewsData.map((review, index) => (

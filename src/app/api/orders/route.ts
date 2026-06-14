@@ -60,10 +60,13 @@ export async function POST(req: Request) {
                 name: item.name,
                 slug: item.slug,
                 image: item.images?.[0] || "",
+
                 mrp: item.mrp,
                 sellingPrice: item.sellingPrice,
                 quantity: item.quantity,
-                weight: item.weight || 50
+
+                selectedVariantId: item.selectedVariantId,
+                selectedWeight: item.selectedWeight
             })),
             totalAmount: body.totals.finalTotal,
             appliedCoupon: body.appliedCoupon ? {
@@ -92,21 +95,80 @@ export async function POST(req: Request) {
 
         // Check for stock updates
         const stockUpdates = body.items.map(async (item: any) => {
+
+            // PRODUCT WITH VARIANT
+            if (item.selectedVariantId) {
+
+                const product = await Product.findOne({
+                    _id: item._id
+                });
+
+                if (!product) {
+                    throw new Error(`${item.name} not found`);
+                }
+
+                const variant = product.variants.id(
+                    item.selectedVariantId
+                );
+
+                if (!variant) {
+                    throw new Error(
+                        `Variant not found for ${item.name}`
+                    );
+                }
+
+                if (variant.stockQuantity < item.quantity) {
+                    throw new Error(
+                        `${item.name} is out of stock`
+                    );
+                }
+
+                variant.stockQuantity -= item.quantity;
+
+                await product.save();
+
+                if (variant.stockQuantity <= 5) {
+                    await Notification.create({
+                        title: "Low Stock Alert",
+                        message: `${product.name} (${variant.weight}) has only ${variant.stockQuantity} remaining`,
+                        type: "INVENTORY",
+                        link: `/products/${product._id}`,
+                    });
+                }
+
+                return;
+            }
+
+            // PACKAGE PRODUCT
             const product = await Product.findOneAndUpdate(
-                { _id: item._id, stockQuantity: { $gte: item.quantity } }, // Ensure enough stock
-                { $inc: { stockQuantity: -item.quantity } },
-                { new: true }
+                {
+                    _id: item._id,
+                    stockQuantity: { $gte: item.quantity }
+                },
+                {
+                    $inc: {
+                        stockQuantity: -item.quantity
+                    }
+                },
+                {
+                    new: true
+                }
             );
+
+            if (!product) {
+                throw new Error(
+                    `${item.name} is out of stock`
+                );
+            }
+
             if (product.stockQuantity <= 5) {
                 await Notification.create({
                     title: "Low Stock Alert",
-                    message: `${product.name} has only ${product.stockQuantity} units remaining`,
+                    message: `${product.name} has only ${product.stockQuantity} remaining`,
                     type: "INVENTORY",
                     link: `/products/${product._id}`,
                 });
             }
-            if (!product) throw new Error(`Product ${item.name} is out of stock!`);
-            return product;
         });
 
         await Promise.all(stockUpdates);

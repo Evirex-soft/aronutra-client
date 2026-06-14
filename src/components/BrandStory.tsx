@@ -3,6 +3,9 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+
 
 const BrandStorySection = () => {
     const { scrollYProgress } = useScroll();
@@ -83,21 +86,17 @@ const BrandStorySection = () => {
                                     We have curated <span className="text-primary">12 distinct varieties</span>, each an invitation to experience nature&apos;s raw, unedited diversity.
                                 </p>
 
-                                {/* <div className="pt-10">
-                                    <motion.a
-                                        href="#collection"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="inline-flex items-center group gap-6"
+                                <div className="pt-10">
+                                    <Link
+                                        href="/about"
+                                        className="group inline-flex items-center gap-4 text-primary font-sans text-[11px] font-black uppercase tracking-[0.4em] transition-all"
                                     >
-                                        <span className="bg-primary text-white h-14 w-14 rounded-full flex items-center justify-center transition-transform group-hover:rotate-12">
-                                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4.5 13.5L13.5 4.5M13.5 4.5H6.75M13.5 4.5V11.25" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
+                                        Read Our Full Story
+                                        <span className="w-10 h-10 rounded-full border border-primary/30 flex items-center justify-center group-hover:bg-primary group-hover:text-[#052c22] transition-all duration-500">
+                                            <ArrowRight size={16} />
                                         </span>
-
-                                    </motion.a>
-                                </div> */}
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 

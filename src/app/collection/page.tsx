@@ -3,22 +3,26 @@ import { ProductCard } from "@/components/ProductCard";
 import { ArrowRight, Award, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+
 export const dynamic = "force-dynamic";
 
 export default async function CollectionPage() {
     // 1. Fetch data separately
-    const packages = await getPackages();
-    const singles = await getSingleProducts();
+    const rawPackages = await getPackages();
+    const rawSingles = await getSingleProducts();
+
+    const packages = JSON.parse(JSON.stringify(rawPackages));
+    const singles = JSON.parse(JSON.stringify(rawSingles));
 
     const discoveryPackage = packages[0];
 
     const bundlePrice = discoveryPackage?.sellingPrice || singles
         .slice(0, 12)
-        .reduce((sum, product) => sum + (product.sellingPrice || 0), 0);
+        .reduce((sum: number, product: any) => sum + (product.sellingPrice || 0), 0);
 
     const bundleMrp = discoveryPackage?.mrp || singles
         .slice(0, 12)
-        .reduce((sum, product) => sum + (product.mrp || 0), 0);
+        .reduce((sum: number, product: any) => sum + (product.mrp || 0), 0);
 
     return (
         <div className="pt-32 pb-24 bg-[#052c22] min-h-screen">
@@ -115,7 +119,7 @@ export default async function CollectionPage() {
 
                 {/* PRODUCT GRID - Now only showing Single products */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
-                    {singles.map((product) => (
+                    {singles.map((product: any) => (
                         <ProductCard key={product._id} product={product} />
                     ))}
                 </div>

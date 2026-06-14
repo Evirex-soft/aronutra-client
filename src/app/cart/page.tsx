@@ -90,11 +90,21 @@ export default function CartPage() {
                                             <div className="flex-1">
                                                 <h3 className="text-xl font-serif text-[#FDFCF8] mb-2">{item.name}</h3>
                                                 <div className="flex items-center gap-4">
-                                                    {/* sellingPrice */}
-                                                    <span className="text-[#d4af37] font-bold">₹{item.sellingPrice}</span>
-                                                    {item.mrp && <span className="text-white/20 line-through text-sm">₹{item.mrp}</span>}
-                                                    {/* Optional: Show weight */}
-                                                    <span className="text-white/20 text-[10px] uppercase font-bold tracking-widest">{item.weight}g</span>
+                                                    <span className="text-[#d4af37] font-bold">
+                                                        ₹{item.sellingPrice}
+                                                    </span>
+
+                                                    {item.mrp && (
+                                                        <span className="text-white/20 line-through text-sm">
+                                                            ₹{item.mrp}
+                                                        </span>
+                                                    )}
+
+                                                    {item.selectedWeight && (
+                                                        <span className="px-2 py-1 bg-[#d4af37]/10 text-[#d4af37] rounded-md text-[10px] font-bold uppercase tracking-wider">
+                                                            {item.selectedWeight}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

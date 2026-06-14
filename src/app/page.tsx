@@ -17,7 +17,9 @@ import UpcomingProduct from "@/components/UpcomingProduct";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const products = await getProducts()
+  const allProducts = await getProducts()
+
+  const products = JSON.parse(JSON.stringify(allProducts));
 
   return (
     <main className="min-h-screen bg-bg-light">

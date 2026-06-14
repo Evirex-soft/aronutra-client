@@ -7,8 +7,9 @@ const OrderItemSchema = new Schema({
     image: { type: String }, // First image URL
     mrp: { type: Number, required: true },
     sellingPrice: { type: Number, required: true }, // Renamed for consistency
-    weight: { type: Number }, // Good for shipping records
-    quantity: { type: Number, required: true }
+    quantity: { type: Number, required: true },
+    selectedVariantId: { type: Schema.Types.ObjectId, required: false },
+    selectedWeight: { type: String, required: false }
 });
 
 const AppliedCouponSchema = new Schema({

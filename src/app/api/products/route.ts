@@ -10,19 +10,21 @@ export async function GET() {
     const db = client.db("test");
     const products = await db.collection("products").find({ status: "ACTIVE" }).toArray();
 
-    return NextResponse.json(
-      products.map(p => ({
-        id: p._id.toString(),
-        urlSlug: p.urlSlug,
-        name: p.productName,
-        desc: p.description,
-        category: p.category,
-        price: p.sellingPrice,
-        stockQuantity: p.stockQuantity,
-        mrp: p.mrp,
-        img: p.productImages?.[0]?.url || "/placeholder.png"
-      }))
-    );
+    const formattedProducts = products.map((p: any) => ({
+      id: p._id.toString(),
+      slug: p.slug,
+      name: p.name,
+      desc: p.shortDescription || "",
+      category: p.category?.name || "Uncategorized",
+      price: p.sellingPrice,
+      mrp: p.mrp,
+      stockQuantity: p.stockQuantity,
+      img: p.images?.[0] || "/placeholder.png",
+      isOrganic: p.isOrganic,
+      weight: p.weight
+    }));
+
+    return NextResponse.json(formattedProducts);
   } catch (error) {
     console.error("Products API GET Error:", error);
     return NextResponse.json({ error: "Failed to load products" }, { status: 500 });

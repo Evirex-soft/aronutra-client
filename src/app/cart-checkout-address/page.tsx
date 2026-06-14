@@ -95,39 +95,41 @@ export default function CheckoutAddressPage() {
     setIsLoading(true);
 
     try {
-      if (selectedPayment === "cod") {
-        // 2. COD Logic: Call your API to save the order
-        const response = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items: checkoutData.cart,
-            shippingAddress: formData,
-            totals: checkoutData.totals,
-            appliedCoupon: checkoutData.appliedCoupon,
-            paymentMethod: "COD",
-            paymentStatus: "PENDING",
-            orderStatus: "PLACED",
-            userId: user.id,
-            userEmail: user.email,
-          }),
-        });
+      // if (selectedPayment === "cod") {
 
-        const result = await response.json();
+      //   const response = await fetch("/api/orders", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({
+      //       items: checkoutData.cart,
+      //       shippingAddress: formData,
+      //       totals: checkoutData.totals,
+      //       appliedCoupon: checkoutData.appliedCoupon,
+      //       paymentMethod: "COD",
+      //       paymentStatus: "PENDING",
+      //       orderStatus: "PLACED",
+      //       userId: user.id,
+      //       userEmail: user.email,
+      //     }),
+      //   });
 
-        if (response.ok) {
-          toast.success("Order placed successfully!");
-          clearCart(); // Clear the context cart
+      //   const result = await response.json();
 
-          // Clear the checkout data so this order can't be re-submitted
-          localStorage.removeItem(STORAGE_KEYS.CHECKOUT);
-          localStorage.removeItem(STORAGE_KEYS.SHIPPING_ADDRESS);
+      //   if (response.ok) {
+      //     toast.success("Order placed successfully!");
+      //     clearCart(); 
 
-          router.push(`/order-confirmation/${result.orderId}`); // Navigate to success page
-        } else {
-          throw new Error(result.message || "Failed to place order");
-        }
-      } else if (selectedPayment === "razorpay") {
+
+      //     localStorage.removeItem(STORAGE_KEYS.CHECKOUT);
+      //     localStorage.removeItem(STORAGE_KEYS.SHIPPING_ADDRESS);
+
+      //     router.push(`/order-confirmation/${result.orderId}`); 
+      //   } else {
+      //     throw new Error(result.message || "Failed to place order");
+      //   }
+      // } 
+
+      if (selectedPayment === "razorpay") {
 
         await openRazorpay(
           checkoutData!,
@@ -152,12 +154,12 @@ export default function CheckoutAddressPage() {
       icon: Building,
       description: "Cards, UPI, Netbanking"
     },
-    {
-      id: "cod" as PaymentMethod,
-      name: "Cash on Delivery",
-      icon: Banknote,
-      description: "Pay at your doorstep"
-    }
+    // {
+    //   id: "cod" as PaymentMethod,
+    //   name: "Cash on Delivery",
+    //   icon: Banknote,
+    //   description: "Pay at your doorstep"
+    // }
   ]
 
   return (
@@ -241,14 +243,28 @@ export default function CheckoutAddressPage() {
               {checkoutData ? (
                 <div className="space-y-6 mb-8">
                   {checkoutData.cart.map((product) => (
-                    <div key={product._id} className="flex gap-4 items-center">
+                    <div key={`${product._id}-${product.selectedVariantId || "default"}`} className="flex gap-4 items-center">
                       <div className="w-16 h-16 bg-stone-50 rounded-xl p-2 border border-stone-100 flex-shrink-0">
                         <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h3 className="text-sm font-serif truncate">{product.name}</h3>
-                        <p className="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Qty: {product.quantity}</p>
-                        <p className="text-sm font-sans font-bold text-[#d4af37]">₹{product.sellingPrice * product.quantity}</p>
+                        <h3 className="text-sm font-serif truncate">
+                          {product.name}
+                        </h3>
+
+                        {product.selectedWeight && (
+                          <span className="inline-block mt-1 px-2 py-1 bg-[#d4af37]/10 text-[#d4af37] rounded-md text-[9px] font-bold uppercase tracking-widest">
+                            {product.selectedWeight}
+                          </span>
+                        )}
+
+                        <p className="mt-2 text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
+                          Qty: {product.quantity}
+                        </p>
+
+                        <p className="text-sm font-sans font-bold text-[#d4af37]">
+                          ₹{product.sellingPrice * product.quantity}
+                        </p>
                       </div>
                     </div>
                   ))}
