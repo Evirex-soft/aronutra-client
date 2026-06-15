@@ -104,7 +104,7 @@ const SingleOrigins: React.FC = () => {
                 </p>
               </div>
               <Link
-                href="/products/aronutra-wayanad"
+                href="/products/aronutra-wayanadan-forest"
                 className="inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-[#052c22] transition-all pt-6 border-t border-stone-100 group-hover:text-[#d4af37]"
               >
                 Explore Sourcing

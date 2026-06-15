@@ -68,16 +68,35 @@ const Footer: React.FC = () => {
               Rooted in nature, crafted for everyday wellness. Discover the pure essence of authentic Indian floral ecosystems.
             </p>
             <div className="flex gap-4 pt-2">
-              {[FaInstagram, FaFacebookF, FaLinkedinIn].map((Icon, i) => (
-                <motion.a
-                  key={i}
-                  href="#"
-                  className="w-10 h-10 border border-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-primary hover:border-primary transition-all duration-300 bg-transparent hover:bg-stone-50"
-                  whileHover={{ y: -2 }}
-                >
-                  <Icon size={14} />
-                </motion.a>
-              ))}
+              <motion.a
+                href="https://www.instagram.com/aronutra_wellness"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 border border-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-primary hover:border-primary transition-all duration-300 bg-transparent hover:bg-stone-50"
+                whileHover={{ y: -2 }}
+                aria-label="Instagram"
+              >
+                <FaInstagram size={14} />
+              </motion.a>
+
+              <motion.a
+                href="https://www.facebook.com/share/1J8Sfkg5bw/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 border border-stone-200 rounded-full flex items-center justify-center text-stone-500 hover:text-primary hover:border-primary transition-all duration-300 bg-transparent hover:bg-stone-50"
+                whileHover={{ y: -2 }}
+                aria-label="Facebook"
+              >
+                <FaFacebookF size={14} />
+              </motion.a>
+
+              <motion.div
+                title="LinkedIn Coming Soon"
+                className="w-10 h-10 border border-stone-200 rounded-full flex items-center justify-center text-stone-400 cursor-not-allowed"
+                whileHover={{ y: -2 }}
+              >
+                <FaLinkedinIn size={14} />
+              </motion.div>
             </div>
           </motion.div>
 
@@ -96,7 +115,7 @@ const Footer: React.FC = () => {
               <div>
                 <p className="font-serif text-stone-400 italic mb-1.5 text-[14px]">Email</p>
                 <a href="mailto:info@aronutra.com" className="font-sans text-[13.5px] text-stone-850 hover:text-primary transition-colors">
-                  info@aronutra.com
+                  contact@aronutra.com
                 </a>
               </div>
             </div>
@@ -111,7 +130,7 @@ const Footer: React.FC = () => {
               {[
                 { name: 'Home', href: '/' },
                 { name: 'Collection', href: '/collection' },
-                { name: 'About', href: '/#about' },
+                { name: 'About', href: '/about' },
                 { name: 'Contact', href: '/#footer' },
                 { name: 'Privacy Policy', href: '/privacy-policy' },
                 { name: 'Terms & Conditions', href: '/terms-and-conditions' },
@@ -173,22 +192,8 @@ const Footer: React.FC = () => {
 
         {/* Faint luxury watermark */}
         <div
-          className="
-    pointer-events-auto
-    select-none
-    text-center
-    mt-20
-    font-serif
-    text-[clamp(3.5rem,10vw,12rem)]
-    font-extrabold
-    tracking-[-0.05em]
-    leading-none
-    text-stone-900/5
-    hover:text-[#1f4d3a]
-    transition-colors
-    duration-700
-    cursor-default
-  "
+          className="pointer-events-auto select-none text-center mt-20 font-serif text-[clamp(3.5rem,10vw,12rem)] font-extrabold tracking-[-0.05em] leading-none  text-stone-900/5 hover:text-[#1f4d3a]
+    transition-colors duration-700 cursor-default"
         >
           ARONUTRA
         </div>
@@ -199,7 +204,7 @@ const Footer: React.FC = () => {
             © {new Date().getFullYear()} AroNutra. All rights reserved.
           </p>
           <p className="font-sans text-[11px] tracking-[0.1em] text-stone-400 uppercase">
-            Designed with Intention
+            Designed & Developed by Evirex Soft
           </p>
         </motion.div>
       </div>

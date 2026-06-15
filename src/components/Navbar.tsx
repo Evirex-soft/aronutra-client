@@ -13,9 +13,9 @@ import NavbarSearch from "./NavbarSearch";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "Collection", href: "/#products" },
+  { name: "Collection", href: "/collection" },
   { name: "Origins", href: "/#single-origins" },
-  { name: "About", href: "/#about" },
+  { name: "About", href: "/about" },
   { name: "Wellness", href: "/#how-it-works" },
   { name: "Contact", href: "/#footer" },
 ];
@@ -123,6 +123,20 @@ const NavBar = () => {
         }
       });
     }
+  };
+
+  const closeMenu = () => {
+    if (!isMenuOpen) return;
+    setIsMenuOpen(false);
+    gsap.to(overlayRef.current, {
+      clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
+      duration: 0.7,
+      ease: "expo.inOut",
+      onComplete: () => {
+        gsap.set(overlayRef.current, { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" });
+        lerpVars.current.targetX = 0;
+      }
+    });
   };
 
   const isOnDarkBackground = !isScrolled || isMenuOpen;
@@ -240,7 +254,7 @@ const NavBar = () => {
                     Welcome Back
                   </p>
 
-                  <Link href="/profile" className="block group">
+                  <Link href="/profile" onClick={closeMenu} className="block group">
                     <span className="text-white text-base font-serif italic normal-case tracking-normal hover:text-primary transition-colors">
                       {session.user?.name || "My Account"}
                     </span>
@@ -260,7 +274,7 @@ const NavBar = () => {
               ) : (
                 <div className="space-y-2">
                   <p className="text-primary text-[11px] font-black">Member</p>
-                  <Link href="/login" className="text-white text-base font-serif italic normal-case tracking-normal">Sign In</Link>
+                  <Link href="/login" onClick={closeMenu} className="text-white text-base font-serif italic normal-case tracking-normal">Sign In</Link>
                 </div>
               )}
             </AnimatePresence>
@@ -270,15 +284,21 @@ const NavBar = () => {
           <div className="hidden md:block order-3 col-span-2 md:col-span-1 text-left md:text-right border-t border-white/5 pt-6 md:border-0 md:pt-0">
             <p className="text-primary text-[11px] mb-2 font-black">Connect</p>
             <div className="flex flex-row md:flex-col gap-4 md:gap-2">
-              <a href="#" className="hover:text-white transition-colors">
+              <a href="https://www.instagram.com/aronutra_wellness"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors">
                 Instagram
               </a>
-              <a href="#" className="hover:text-white transition-colors">
-                WhatsApp
+              <a href="https://www.facebook.com/share/1J8Sfkg5bw/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors">
+                Facebook
               </a>
               <a
                 href="tel:+917306288233"
-                className="normal-case tracking-normal text-white/60"
+                className="normal-case tracking-normal text-white/60 hover:text-white transition-colors"
               >
                 +91 73062 88233
               </a>
@@ -294,7 +314,7 @@ const NavBar = () => {
                 <Link
                   href={link.href}
                   onMouseEnter={handleLinkHover}
-                  onClick={toggleMenu}
+                  onClick={closeMenu}
                   className="block h-auto lg:h-20 overflow-hidden group"
                 >
                   <div className="relative flex flex-col transition-transform duration-500 ease-out lg:group-hover:-translate-y-1/2">
