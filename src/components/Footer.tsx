@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import { newsletterSchema } from "@/utils/validations";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -32,13 +34,40 @@ const Footer: React.FC = () => {
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-    setIsSubmitting(true);
-    // Simulate API registration
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubscribed(true);
-    setIsSubmitting(false);
-    setEmail("");
+
+    const validation = newsletterSchema.safeParse({ email });
+
+    if (!validation.success) {
+      toast.error(validation.error.issues[0].message);
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await fetch("api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validation.data),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+      toast.success("Successfully subscribed!");
+      setIsSubscribed(true);
+      setEmail("");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+
+
   };
 
   return (
@@ -169,7 +198,6 @@ const Footer: React.FC = () => {
                   <div className="relative border-b border-stone-200 focus-within:border-stone-900 transition-colors py-1.5 flex items-center gap-2">
                     <input
                       type="email"
-                      required
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}

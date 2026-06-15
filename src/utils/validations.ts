@@ -57,8 +57,18 @@ export const resetPasswordSchema = z
     });
 
 
+// News Letter Subscription
+export const newsletterSchema = z.object({
+    email: z
+        .string()
+        .trim()
+        .email("Please enter a valid email address"),
+});
+
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AddressInput = z.infer<typeof addressSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type NewsletterInput = z.infer<typeof newsletterSchema>;
