@@ -50,7 +50,7 @@ export default function CollectionDiscovery() {
             <div className="relative group cursor-pointer overflow-hidden">
               <div className="absolute inset-0 bg-[#052c22]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10" />
               <img
-                src="/images/packet.png"
+                src="/images/packet.webp"
                 alt="Signature Collection Packaging"
                 className="w-full h-auto object-contain transition-transform duration-[2s] ease-out group-hover:scale-105"
               />
