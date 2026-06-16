@@ -22,7 +22,7 @@ const slides = [
       "12 Unique Raw Honey Varieties. One Powerful Journey.",
     cta: "/collection",
     buttonText: "Explore Collection",
-    duration: 8000, // 8 seconds
+    duration: 3000, // 3 seconds
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const slides = [
       "Real people. Real connections. Together, we live better naturally.",
     cta: "/#footer",
     buttonText: "Join Community",
-    duration: 4000, // 4 seconds
+    duration: 3000, // 3 seconds
   },
 ];
 
