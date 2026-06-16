@@ -40,25 +40,6 @@ const AboutSection = () => {
     >
       <div className="max-w-[1400px] mx-auto">
 
-        {/* HEADER: POSITIONING & BELIEF */}
-        {/* <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-24 md:mb-36">
-          <div className="lg:col-span-8 space-y-8">
-            <span className="reveal-text block font-sans text-[11px] font-black uppercase tracking-[0.6em] text-white/40">
-              The Aronutra Philosophy
-            </span>
-            <h2 className="reveal-text font-serif text-5xl md:text-7xl lg:text-[85px] leading-[0.95] tracking-tighter">
-              Nature’s Purest Wellness, <br />
-              <span className="italic font-light opacity-60">Bottled for Modern Living.</span>
-            </h2>
-          </div>
-          <div className="lg:col-span-4 lg:pt-32">
-            <p className="reveal-text font-sans text-stone-300 text-lg leading-relaxed font-light">
-              AroNutra is a <span className="text-white font-medium">Premium Wellness Brand from India</span>,
-              bridging the gap between nature's diverse ecosystems and modern healthy lifestyles through a curated 12 unique raw honey varieties.
-            </p>
-          </div>
-        </div> */}
-
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-24 md:mb-36">
 
           {/* LEFT IMAGE */}
@@ -79,7 +60,7 @@ const AboutSection = () => {
 
             <div className="relative overflow-hidden rounded-[32px] aspect-[4/5]">
               <Image
-                src="/images/wellness.png"
+                src="/images/wellness.webp"
                 alt="Wellness Community"
                 fill
                 className="object-cover"
