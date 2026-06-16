@@ -26,8 +26,8 @@ const slides = [
   },
   {
     id: 2,
-    desktopImage: "/images/community-desktop.png",
-    mobileImage: "/images/community-mobile.png",
+    desktopImage: "/images/community-desktop.PNG",
+    mobileImage: "/images/community-mobile.PNG",
     eyebrow: "Wellness Community",
     title1: "We're Building",
     title2: "A Wellness Community.",
