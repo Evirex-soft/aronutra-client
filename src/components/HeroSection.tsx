@@ -388,9 +388,9 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen lg:min-h-[100dvh] w-full overflow-hidden bg-[#052c22] flex items-center pt-32 pb-24 md:pt-40 md:pb-20"
+      className="relative h-screen w-full overflow-hidden bg-[#052c22] flex items-center pt-20 pb-10"
     >
-      {/* UNIFIED BACKGROUND CONTAINER (Hardware Accelerated) */}
+      {/*  Background */}
       <div
         ref={bgImageContainerRef}
         className="absolute inset-0 z-0 will-change-transform"
@@ -433,15 +433,15 @@ const HeroSection = () => {
 
       {/* MAIN CONTENT */}
       <div className="relative z-20 w-full px-6 md:px-12 lg:px-20">
-        <div ref={contentRef} className="max-w-4xl will-change-transform">
-          <div className="overflow-hidden mb-6">
+        <div ref={contentRef} className="max-w-4xl">
+          <div className="overflow-hidden mb-4">
             <p className="hero-classic-fade font-sans text-[11px] font-bold uppercase tracking-[0.6em] text-[#f5be42]">
               {slides[activeSlide].eyebrow}
             </p>
           </div>
 
-          <h1 className="mb-8 leading-[0.9] tracking-tighter text-white" style={{ fontSize: "clamp(2.5rem, 8vw, 7rem)" }}>
-            <div className="overflow-hidden pb-2 -mt-2 pt-2">
+          <h1 className="mb-6 leading-[0.85] tracking-tighter text-white" style={{ fontSize: "clamp(2.2rem, 7vw, 6.5rem)" }}>
+            <div className="overflow-hidden pb-1">
               <span className="hero-mask-line inline-block font-light italic text-stone-200">
                 {slides[activeSlide].title1}
               </span>
@@ -453,14 +453,14 @@ const HeroSection = () => {
             </div>
           </h1>
 
-          <div className="overflow-hidden mb-12">
-            <h2 className="hero-classic-fade font-sans text-lg md:text-2xl font-light text-stone-200 leading-relaxed">
+          <div className="overflow-hidden mb-8 md:mb-10">
+            <h2 className="hero-classic-fade font-sans text-base md:text-xl font-light text-stone-200 leading-relaxed max-w-2xl">
               {slides[activeSlide].subtitle}
             </h2>
           </div>
 
-          <div className="hero-classic-fade flex flex-wrap items-center gap-8">
-            <a href={slides[activeSlide].cta} className="rounded-full bg-primary px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-transform hover:scale-105 active:scale-95">
+          <div className="hero-classic-fade flex flex-wrap items-center gap-6 md:gap-8">
+            <a href={slides[activeSlide].cta} className="rounded-full bg-primary px-8 py-4 md:px-10 md:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-transform hover:scale-105 active:scale-95">
               {slides[activeSlide].buttonText}
             </a>
             <a href="#about" className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-white">
@@ -489,7 +489,7 @@ const HeroSection = () => {
           transform: translateZ(0);
         }
       `}} />
-    </section>
+    </section >
   );
 };
 
