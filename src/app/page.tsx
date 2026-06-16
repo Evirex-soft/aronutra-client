@@ -25,9 +25,9 @@ export default async function Home() {
     <main className="min-h-screen bg-bg-light">
       <HeroSection />
       {/* HERO SUBTEXT */}
+      <AboutSection />
       <BrandStorySection />
       <FeatureStrip />
-      <AboutSection />
       {/* @ts-ignore: CollectionDiscovery props typing mismatch */}
       <CollectionDiscovery products={products} />
       <SingleOrigins />

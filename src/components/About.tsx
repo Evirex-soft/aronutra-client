@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -40,7 +41,7 @@ const AboutSection = () => {
       <div className="max-w-[1400px] mx-auto">
 
         {/* HEADER: POSITIONING & BELIEF */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-24 md:mb-36">
+        {/* <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-24 md:mb-36">
           <div className="lg:col-span-8 space-y-8">
             <span className="reveal-text block font-sans text-[11px] font-black uppercase tracking-[0.6em] text-white/40">
               The Aronutra Philosophy
@@ -53,9 +54,66 @@ const AboutSection = () => {
           <div className="lg:col-span-4 lg:pt-32">
             <p className="reveal-text font-sans text-stone-300 text-lg leading-relaxed font-light">
               AroNutra is a <span className="text-white font-medium">Premium Wellness Brand from India</span>,
-              bridging the gap between nature's diverse ecosystems and modern healthy lifestyles through a curated 12 unique 12 raw honey varieties.
+              bridging the gap between nature's diverse ecosystems and modern healthy lifestyles through a curated 12 unique raw honey varieties.
             </p>
           </div>
+        </div> */}
+
+        <div className="grid lg:grid-cols-2 gap-16 items-center mb-24 md:mb-36">
+
+          {/* LEFT IMAGE */}
+          <div className="reveal-text">
+
+            <div className="mb-6">
+              <span className="font-sans text-[11px] font-black uppercase tracking-[0.6em] text-white/40">
+                Our Wellness Community
+              </span>
+
+              <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl leading-tight mt-4">
+                Building Connections,
+                <span className="italic font-light block text-white/60">
+                  Inspired by Nature
+                </span>
+              </h2>
+            </div>
+
+            <div className="relative overflow-hidden rounded-[32px] aspect-[4/5]">
+              <Image
+                src="/images/wellness.png"
+                alt="Wellness Community"
+                fill
+                className="object-cover"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+            </div>
+
+          </div>
+
+          {/* RIGHT CONTENT */}
+          <div>
+            <span className="reveal-text block font-sans text-[11px] font-black uppercase tracking-[0.6em] text-white/40">
+              The Aronutra Philosophy
+            </span>
+
+            <h2 className="reveal-text font-serif text-5xl md:text-7xl lg:text-[85px] leading-[0.95] tracking-tighter mt-8">
+              Nature’s Purest Wellness,
+              <br />
+              <span className="italic font-light opacity-60">
+                Bottled for Modern Living.
+              </span>
+            </h2>
+
+            <p className="reveal-text mt-10 font-sans text-stone-300 text-lg leading-relaxed font-light">
+              AroNutra is a
+              <span className="text-white font-medium">
+                {" "}Premium Wellness Brand from India
+              </span>,
+              bridging the gap between nature's diverse ecosystems and modern healthy
+              lifestyles through a curated collection of 12 unique raw honey varieties.
+            </p>
+          </div>
+
         </div>
 
         {/* NARRATIVE GRID: THREE PILLARS */}

@@ -9,12 +9,43 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+
+const slides = [
+  {
+    id: 1,
+    desktopImage: "/images/hero-desk.png",
+    mobileImage: "/images/mobile.jpg",
+    eyebrow: "Premium Wellness Lifestyle",
+    title1: "Nature’s Purest Wellness,",
+    title2: "Bottled for Modern Life.",
+    subtitle:
+      "12 Unique Raw Honey Varieties. One Powerful Journey.",
+    cta: "/collection",
+    buttonText: "Explore Collection",
+    duration: 8000, // 8 seconds
+  },
+  {
+    id: 2,
+    desktopImage: "/images/community-desktop.png",
+    mobileImage: "/images/community-mobile.png",
+    eyebrow: "Wellness Community",
+    title1: "We're Building",
+    title2: "A Wellness Community.",
+    subtitle:
+      "Real people. Real connections. Together, we live better naturally.",
+    cta: "/#footer",
+    buttonText: "Join Community",
+    duration: 4000, // 4 seconds
+  },
+];
+
 const HeroSection = () => {
   const sectionRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
   const bgImageRef = useRef<HTMLDivElement | null>(null);
   const bgImageMobileRef = useRef<HTMLDivElement | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [activeSlide, setActiveSlide] = useState(0);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
@@ -73,14 +104,22 @@ const HeroSection = () => {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, slides[activeSlide].duration);
+
+    return () => clearTimeout(timeout);
+  }, [activeSlide]);
+
   return (
     <section
       ref={sectionRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen lg:h-screen w-full overflow-hidden bg-[#052c22] flex items-center pt-32 pb-24 md:pt-0 md:pb-0"
+      className="relative min-h-screen lg:min-h-[100dvh] w-full overflow-hidden bg-[#052c22] flex items-center pt-32 pb-24 md:pt-40 md:pb-20"
     >
       {/* DESKTOP BACKGROUND IMAGE */}
-      <div ref={bgImageRef} className="absolute inset-0 z-0 hidden md:block">
+      {/* <div ref={bgImageRef} className="absolute inset-0 z-0 hidden md:block">
         <Image
           src="/images/hero-desk.png"
           alt="Premium Honey Background"
@@ -89,10 +128,32 @@ const HeroSection = () => {
           sizes="100vw"
           className="object-cover object-center brightness-[0.7] contrast-[1.05]"
         />
+      </div> */}
+
+      <div
+        ref={bgImageRef}
+        className="absolute inset-0 z-0 hidden md:block"
+      >
+        {slides.map((slide, index) => (
+          <Image
+            key={slide.id}
+            src={slide.desktopImage}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={`object-cover object-center brightness-[0.7] contrast-[1.05]
+      transition-opacity duration-1000 absolute inset-0
+      ${activeSlide === index
+                ? "opacity-100"
+                : "opacity-0"
+              }`}
+          />
+        ))}
       </div>
 
       {/* MOBILE BACKGROUND IMAGE */}
-      <div ref={bgImageMobileRef} className="absolute inset-0 z-0 block md:hidden">
+      {/* <div ref={bgImageMobileRef} className="absolute inset-0 z-0 block md:hidden">
         <Image
           src="/images/mobile.jpg"
           alt="Premium Honey Background Mobile"
@@ -101,6 +162,28 @@ const HeroSection = () => {
           sizes="100vw"
           className="object-cover object-center brightness-[0.7] contrast-[1.05]"
         />
+      </div> */}
+
+      <div
+        ref={bgImageMobileRef}
+        className="absolute inset-0 z-0 block md:hidden"
+      >
+        {slides.map((slide, index) => (
+          <Image
+            key={slide.id}
+            src={slide.mobileImage}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={`object-cover object-center brightness-[0.7] contrast-[1.05]
+      transition-opacity duration-1000 absolute inset-0
+      ${activeSlide === index
+                ? "opacity-100"
+                : "opacity-0"
+              }`}
+          />
+        ))}
       </div>
 
       {/* OVERLAY GRADIENT */}
@@ -124,20 +207,20 @@ const HeroSection = () => {
           {/* Eyebrow */}
           <div className="overflow-hidden mb-6">
             <p className="hero-classic-fade font-sans text-[11px] font-bold uppercase tracking-[0.6em] text-[#f5be42]">
-              Premium Wellness Lifestyle
+              {slides[activeSlide].eyebrow}
             </p>
           </div>
 
           {/* H1 - Masked Reveal */}
           <h1 className="mb-8 leading-[0.9] tracking-tighter text-white" style={{ fontSize: "clamp(2.5rem, 8vw, 7rem)" }}>
             <div className="overflow-hidden pb-2">
-              <span className="hero-mask-line inline-block font-serif italic font-light text-stone-200">
-                Nature’s Purest Wellness,
+              <span className="hero-mask-line inline-block font-medium italic font-light text-stone-200">
+                {slides[activeSlide].title1}
               </span>
             </div>
             <div className="overflow-hidden">
               <span className="hero-mask-line inline-block font-sans font-black uppercase">
-                Bottled for Modern Life.
+                {slides[activeSlide].title2}
               </span>
             </div>
           </h1>
@@ -145,18 +228,19 @@ const HeroSection = () => {
           {/* Headline Subtext */}
           <div className="overflow-hidden mb-12">
             <h2 className="hero-classic-fade font-sans text-lg md:text-2xl font-light text-stone-200 leading-relaxed">
-              12 Unique Raw Honey Varieties. <span className="text-[#f5be42] font-serif italic tracking-normal">One Powerful Journey.</span>
+              {slides[activeSlide].subtitle}
             </h2>
           </div>
 
           {/* CTAs */}
           <div className="hero-classic-fade flex flex-wrap items-center gap-8">
             <a
-              href="/collection"
+              href={slides[activeSlide].cta}
               className="group relative overflow-hidden rounded-full bg-primary px-10 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all duration-500"
             >
-              <span className="relative z-10 group-hover:text-[#052c22] transition-colors duration-500">Explore Collection</span>
-              <div className="absolute inset-0 z-0 scale-x-0 bg-white transition-transform duration-500 origin-right group-hover:scale-x-100 group-hover:origin-left" />
+              <span className="relative z-10">
+                {slides[activeSlide].buttonText}
+              </span>
             </a>
 
             <a
@@ -184,13 +268,38 @@ const HeroSection = () => {
         </p>
       </div>
 
+
+
       {/* Cinematic Scroll Indicator - Made responsive to screen height */}
-      <div className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-4 pointer-events-none">
-        <span className="hero-classic-fade font-sans text-[9px] font-bold uppercase tracking-[0.4em] text-white/40">Scroll</span>
-        <div className="h-10 md:h-14 w-[1px] bg-white/10 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full bg-primary animate-classic-scroll" />
+      <div className="absolute bottom-6 md:bottom-12 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-6">
+
+        {/* Carousel Dots */}
+        <div className="flex gap-3">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setActiveSlide(index)}
+              className={`h-2 rounded-full transition-all duration-300 ${activeSlide === index
+                ? "w-8 bg-primary"
+                : "w-2 bg-white/40"
+                }`}
+            />
+          ))}
         </div>
+
+        {/* Scroll Indicator */}
+        <div className="flex flex-col items-center gap-4 pointer-events-none">
+          <span className="hero-classic-fade font-sans text-[9px] font-bold uppercase tracking-[0.4em] text-white/40">
+            Scroll
+          </span>
+
+          <div className="h-10 md:h-14 w-[1px] bg-white/10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full bg-primary animate-classic-scroll" />
+          </div>
+        </div>
+
       </div>
+
 
       <style dangerouslySetInnerHTML={{
         __html: `

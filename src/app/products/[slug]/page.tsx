@@ -6,6 +6,7 @@ import { Truck, RotateCcw, ShieldCheck, Award, MapPin, Droplets } from "lucide-r
 import ReviewCard from "./ReviewCard";
 import reviewsData from "@/lib/reviewsData";
 import ProductActions from "./ProductActions";
+import ProductGallery from "./ProductGallery"
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function ProductDetailPage({
 
           {/* LEFT: IMAGE GALLERY */}
           <div className="lg:col-span-7">
-            <div className="relative aspect-[4/3] w-full rounded-[2rem] bg-white overflow-hidden flex items-center justify-center shadow-2xl">
+            {/* <div className="relative aspect-[4/3] w-full rounded-[2rem] bg-white overflow-hidden flex items-center justify-center shadow-2xl">
               <Image
                 src={product.images?.[0] || "/placeholder.png"}
                 alt={product.name}
@@ -67,7 +68,9 @@ export default async function ProductDetailPage({
                   {isPackage ? "Signature Set" : `${product.purityPercentage || 100}% Pure`}
                 </span>
               </div>
-            </div>
+            </div> */}
+
+            <ProductGallery images={product.images || []} name={product.name} />
           </div>
 
           {/* RIGHT: CONTENT SECTION */}
