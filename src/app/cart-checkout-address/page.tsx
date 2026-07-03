@@ -308,6 +308,16 @@ export default function CheckoutAddressPage() {
                 <p className="text-stone-400 text-xs py-10 text-center">Your bag is empty.</p>
               )}
 
+              {/* Action Button */}
+              <button
+                onClick={handleProceed}
+                disabled={!checkoutData || isLoading}
+                className="w-full mt-10 bg-[#052c22] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:bg-[#0a3d30] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
+              >
+                {isLoading ? "Processing..." : "Complete Order"}
+                {!isLoading && <ArrowRight size={14} />}
+              </button>
+
               {/* Payment Methods */}
               <div className="pt-8 border-t border-stone-100">
                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-stone-400">Payment Method</h3>
@@ -339,16 +349,6 @@ export default function CheckoutAddressPage() {
                   })}
                 </div>
               </div>
-
-              {/* Action Button */}
-              <button
-                onClick={handleProceed}
-                disabled={!checkoutData || isLoading}
-                className="w-full mt-10 bg-[#052c22] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:bg-[#0a3d30] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
-              >
-                {isLoading ? "Processing..." : "Complete Order"}
-                {!isLoading && <ArrowRight size={14} />}
-              </button>
 
               <p className="text-[9px] text-center text-stone-400 uppercase tracking-[0.2em] mt-6 leading-relaxed">
                 By completing this order, you agree to our <br /> Terms of Service and Quality Promise.
