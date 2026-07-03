@@ -319,21 +319,20 @@ export default function CheckoutAddressPage() {
                         key={method.id}
                         onClick={() => setSelectedPayment(method.id)}
                         className={`group relative p-4 rounded-2xl border transition-all cursor-pointer ${isSelected
-                          ? "bg-[#052c22] border-[#052c22] shadow-lg"
-                          : "bg-stone-50 border-stone-100 hover:border-[#d4af37]"
+                          ? "bg-[#f6faf8] border-[#b7d8cb]"
+                          : "bg-white border-stone-200 hover:border-[#d4af37]/60 hover:bg-stone-50"
                           }`}
                       >
                         <div className="flex items-center gap-4">
                           <method.icon size={20} className={isSelected ? "text-[#d4af37]" : "text-stone-400"} />
                           <div>
-                            <p className={`text-xs font-bold uppercase tracking-widest ${isSelected ? "text-white" : "text-[#052c22]"}`}>
+                            <p className={`text-xs font-bold uppercase tracking-widest ${isSelected ? "text-[#0b5d46]" : "text-[#052c22]"}`}>
                               {method.name}
                             </p>
-                            <p className={`text-[9px] ${isSelected ? "text-white/40" : "text-stone-400"}`}>
+                            <p className={`text-[9px] ${isSelected ? "text-[#0b5d46]/60" : "text-stone-400"}`}>
                               {method.description}
                             </p>
                           </div>
-                          {isSelected && <ChevronRight size={16} className="ml-auto text-[#d4af37]" />}
                         </div>
                       </div>
                     )
