@@ -319,7 +319,7 @@ export default function CheckoutAddressPage() {
               </button>
 
               {/* Payment Methods */}
-              <div className="pt-8 border-t border-stone-100">
+              {/* <div className="pt-8 border-t border-stone-100">
                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-stone-400">Payment Method</h3>
                 <div className="space-y-3">
                   {paymentMethods.map((method) => {
@@ -348,7 +348,7 @@ export default function CheckoutAddressPage() {
                     )
                   })}
                 </div>
-              </div>
+              </div> */}
 
               <p className="text-[9px] text-center text-stone-400 uppercase tracking-[0.2em] mt-6 leading-relaxed">
                 By completing this order, you agree to our <br /> Terms of Service and Quality Promise.

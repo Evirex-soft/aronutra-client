@@ -37,7 +37,7 @@ export async function openRazorpay(
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
             amount: rzpOrder.amount,
             currency: "INR",
-            name: "Himalayan Wellness",
+            name: "AroNutra Wellness Private Limited",
             description: "Purchase of Premium Wellness Products",
             order_id: rzpOrder.id,
             prefill: {
