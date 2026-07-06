@@ -27,6 +27,7 @@ interface CartContextType {
     cart: CartItem[];
     appliedCoupon: Coupon | null;
     addToCart: (product: CartItem, quantity?: number) => void;
+    buyNow: (product: CartItem) => void;
     removeFromCart: (productId: string) => void;
     updateQuantity: (productId: string, quantity: number) => void;
     getCartCount: () => number;
@@ -224,6 +225,53 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         );
     };
 
+
+    const buyNow = (product: CartItem) => {
+        const existingItem = cart.find(item =>
+            product.selectedVariantId
+                ? (item._id === product._id && item.selectedVariantId === product.selectedVariantId)
+                : item._id === product._id
+        );
+
+        let updatedCart: CartItem[];
+
+        if (existingItem) {
+            updatedCart = cart.map(item => {
+                const isSame = product.selectedVariantId
+                    ? (item._id === product._id && item.selectedVariantId === product.selectedVariantId)
+                    : item._id === product._id;
+                return isSame ? { ...item, quantity: item.quantity + 1 } : item;
+            });
+        } else {
+            updatedCart = [...cart, { ...product, quantity: 1 }];
+        }
+
+        // 2. Update the actual state for the rest of the app
+        setCart(updatedCart);
+
+        // 3. IMPORTANT: Manually calculate totals using 'updatedCart' 
+        // instead of the stale 'cart' state variable
+        const originalTotal = updatedCart.reduce((total, item) => total + item.mrp * item.quantity, 0);
+        const cartTotal = updatedCart.reduce((total, item) => total + item.sellingPrice * item.quantity, 0);
+        const discount = originalTotal - cartTotal;
+
+        const checkoutData = {
+            cart: updatedCart,
+            appliedCoupon,
+            totals: {
+                originalTotal,
+                cartTotal,
+                discount,
+                couponDiscount: getCouponDiscount(), // This is fine if coupon doesn't change
+                finalTotal: cartTotal - getCouponDiscount(),
+            },
+            savedAt: new Date().toISOString(),
+        };
+
+        // 4. Save to localStorage immediately so the next page finds it
+        localStorage.setItem(STORAGE_KEYS.CHECKOUT, JSON.stringify(checkoutData));
+    };
+
     const clearCart = () => {
         setCart([]);
         setAppliedCoupon(null);
@@ -300,7 +348,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <CartContext.Provider value={{
-            cart, appliedCoupon, addToCart, removeFromCart, updateQuantity, getCartCount, getCartTotal, getCartOriginalTotal,
+            cart, appliedCoupon, addToCart, buyNow, removeFromCart, updateQuantity, getCartCount, getCartTotal, getCartOriginalTotal,
             getCartDiscount,
             applyCoupon,
             removeCoupon,

@@ -76,10 +76,12 @@ export default function CartPage() {
                         <div className="bg-white/5 rounded-[32px] border border-white/10 p-8 backdrop-blur-sm">
                             <div className="space-y-10">
                                 {cart.map((item) => (
-                                    <div key={item._id} className="group relative flex flex-col md:flex-row md:items-center justify-between gap-8 pb-10 border-b border-white/5 last:border-0 last:pb-0">
-                                        <div className="flex items-center gap-8 flex-1">
-                                            {/* Image */}
-                                            <div className="relative w-28 h-28 bg-white rounded-2xl overflow-hidden p-4 flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
+                                    <div key={item._id} className="group relative flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/5 last:border-0 last:pb-0">
+
+                                        {/* Top Section: Image and Details */}
+                                        <div className="flex items-start gap-4 md:gap-8 flex-1">
+                                            {/* Image Container */}
+                                            <div className="relative w-24 h-24 md:w-28 md:h-28 bg-white rounded-2xl overflow-hidden p-3 flex-shrink-0 group-hover:scale-105 transition-transform duration-500">
                                                 <img
                                                     src={item.images?.[0] || "/placeholder.png"}
                                                     alt={item.name}
@@ -87,21 +89,22 @@ export default function CartPage() {
                                                 />
                                             </div>
 
-                                            <div className="flex-1">
-                                                <h3 className="text-xl font-serif text-[#FDFCF8] mb-2">{item.name}</h3>
-                                                <div className="flex items-center gap-4">
+                                            {/* Product Details */}
+                                            <div className="flex-1 pr-8 md:pr-0">
+                                                <h3 className="text-lg md:text-xl font-serif text-[#FDFCF8] mb-1 md:mb-2 leading-tight">
+                                                    {item.name}
+                                                </h3>
+                                                <div className="flex flex-wrap items-center gap-3 md:gap-4">
                                                     <span className="text-[#d4af37] font-bold">
                                                         ₹{item.sellingPrice}
                                                     </span>
-
                                                     {item.mrp && (
-                                                        <span className="text-white/20 line-through text-sm">
+                                                        <span className="text-white/20 line-through text-xs md:text-sm">
                                                             ₹{item.mrp}
                                                         </span>
                                                     )}
-
                                                     {item.selectedWeight && (
-                                                        <span className="px-2 py-1 bg-[#d4af37]/10 text-[#d4af37] rounded-md text-[10px] font-bold uppercase tracking-wider">
+                                                        <span className="px-2 py-0.5 bg-[#d4af37]/10 text-[#d4af37] rounded-md text-[9px] font-bold uppercase tracking-wider">
                                                             {item.selectedWeight}
                                                         </span>
                                                     )}
@@ -109,9 +112,10 @@ export default function CartPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between md:justify-end gap-10">
-                                            {/*  Quantity logic */}
-                                            <div className="flex items-center bg-white/5 rounded-full border border-white/10 px-4 py-2">
+                                        {/* Bottom Section: Quantity and Price */}
+                                        <div className="flex items-center justify-between md:justify-end gap-4 md:gap-10 w-full md:w-auto">
+                                            {/* Quantity Selector */}
+                                            <div className="flex items-center bg-white/5 rounded-full border border-white/10 px-2 py-1 md:px-4 md:py-2 flex-shrink-0">
                                                 <button
                                                     onMouseDown={() => handleHold(item._id!, item.quantity, "decrease")}
                                                     onMouseUp={stopHold}
@@ -120,7 +124,7 @@ export default function CartPage() {
                                                 >
                                                     <Minus size={14} />
                                                 </button>
-                                                <span className="w-10 text-center font-bold text-sm text-[#FDFCF8]">
+                                                <span className="w-8 md:w-10 text-center font-bold text-sm text-[#FDFCF8]">
                                                     {item.quantity}
                                                 </span>
                                                 <button
@@ -133,21 +137,25 @@ export default function CartPage() {
                                                 </button>
                                             </div>
 
-                                            {/* Total calculation */}
-                                            <div className="min-w-[100px] text-right">
-                                                <p className="text-lg font-sans font-medium text-[#FDFCF8]">
+                                            {/* Total Price for item */}
+                                            <div className="min-w-[80px] md:min-w-[100px] text-right">
+                                                <p className="text-base md:text-lg font-sans font-medium text-[#FDFCF8]">
                                                     ₹{item.sellingPrice * item.quantity}
                                                 </p>
                                             </div>
-
-                                            {/* Remove */}
-                                            <button
-                                                onClick={() => removeFromCart(item._id!)}
-                                                className="text-white/20 hover:text-red-400 transition-all p-2"
-                                            >
-                                                <X size={18} />
-                                            </button>
                                         </div>
+
+                                        {/* Remove Button - */}
+                                        <button
+                                            onClick={() => removeFromCart(item._id!)}
+                                            className="absolute top-0 right-0 md:relative md:top-auto md:right-auto flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full
+            text-red-400/70 transition-all duration-300
+            hover:bg-red-500 hover:text-white
+            active:scale-95"
+                                            aria-label="Remove item"
+                                        >
+                                            <X size={18} strokeWidth={2.5} />
+                                        </button>
                                     </div>
                                 ))}
                             </div>

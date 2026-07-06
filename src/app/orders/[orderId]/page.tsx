@@ -16,6 +16,16 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
         year: 'numeric'
     });
 
+    const expectedDeliveryDate = new Date(order.createdAt);
+    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
+
+    const deliveryDate = expectedDeliveryDate.toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
     // Calculate Subtotal from items
     const subtotal = order.items.reduce((acc: number, item: any) => acc + (item.sellingPrice * item.quantity), 0);
 
@@ -161,6 +171,19 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                             <p className="text-[10px] uppercase tracking-widest opacity-70">
                                 {order.status === 'Placed' ? 'We are processing your order' : 'Your order has been updated'}
                             </p>
+                            <div className="mt-6 pt-5 border-t border-[#052c22]/20">
+                                <p className="text-[10px] uppercase tracking-[0.25em] opacity-70 mb-2">
+                                    Expected Delivery
+                                </p>
+
+                                <p className="text-xl font-serif italic">
+                                    {deliveryDate}
+                                </p>
+
+                                <p className="text-[10px] uppercase tracking-widest opacity-60 mt-2">
+                                    Within 7 business days
+                                </p>
+                            </div>
                         </div>
 
                         {/* Payment Details Card */}

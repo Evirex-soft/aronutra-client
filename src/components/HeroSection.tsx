@@ -33,8 +33,8 @@ const slides = [
     title2: "A Wellness Community.",
     subtitle:
       "Real people. Real connections. Together, we live better naturally.",
-    cta: "/#footer",
-    buttonText: "Join Community",
+    cta: "/collection",
+    buttonText: "Explore Collection",
     duration: 3000, // 3 seconds
   },
 ];
@@ -155,13 +155,17 @@ const HeroSection = () => {
             </p>
           </div>
 
-          <h1 className="mb-6 leading-[0.85] tracking-tighter text-white" style={{ fontSize: "clamp(2.2rem, 7vw, 6.5rem)" }}>
-            <div className="overflow-hidden pb-1">
-              <span className="hero-mask-line inline-block font-light italic text-stone-200">
+          <h1
+            className="mb-6 leading-[0.92] tracking-tighter text-white"
+            style={{ fontSize: "clamp(2.2rem, 7vw, 6.5rem)" }}
+          >
+            <div className="overflow-hidden pb-2">
+              <span className="hero-mask-line inline-block font-sans font-black uppercase">
                 {slides[activeSlide].title1}
               </span>
             </div>
-            <div className="overflow-hidden">
+
+            <div className="overflow-hidden pb-2">
               <span className="hero-mask-line inline-block font-sans font-black uppercase">
                 {slides[activeSlide].title2}
               </span>
@@ -178,9 +182,9 @@ const HeroSection = () => {
             <a href={slides[activeSlide].cta} className="rounded-full bg-primary px-8 py-4 md:px-10 md:py-5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-transform hover:scale-105 active:scale-95">
               {slides[activeSlide].buttonText}
             </a>
-            <a href="#about" className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-white">
+            <a href="#footer" className="group flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-white">
               <span className="h-[1px] w-8 bg-white/30 transition-all group-hover:w-12 group-hover:bg-primary" />
-              Our Story
+              Join Community
             </a>
           </div>
         </div>

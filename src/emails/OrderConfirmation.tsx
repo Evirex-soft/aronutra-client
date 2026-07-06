@@ -21,103 +21,133 @@ interface OrderConfirmationEmailProps {
 export const OrderConfirmationEmail = ({
     order,
     userEmail,
-}: OrderConfirmationEmailProps) => (
-    <Html>
-        <Head />
-        <Preview>Your AroNutra order #{order.orderId} is confirmed</Preview>
-        <Body style={main}>
-            <Container style={container}>
-                {/* Brand Header */}
-                <Section style={headerSection}>
-                    <Text style={brandLabel}>AroNutra Wellness Private Limited</Text>
-                </Section>
+}: OrderConfirmationEmailProps) => {
 
-                {/* Main Heading */}
-                <Heading style={h1}>Order Confirmed</Heading>
+    const orderDate = new Date(order.createdAt);
 
-                <Text style={text}>
-                    Hi {userEmail},<br /><br />
-                    Thank you for your purchase. We have received your order and are preparing it for dispatch.
-                    Below are the details of your selection from the Collective.
-                </Text>
+    const expectedDeliveryDate = new Date(orderDate);
+    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
-                {/* Order ID Label */}
-                <Section style={orderIdSection}>
-                    <Text style={orderIdText}>REFERENCE ID: #{order.orderId}</Text>
-                </Section>
+    const deliveryDate = expectedDeliveryDate.toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
 
-                {/* Items Table */}
-                <Section style={itemSection}>
-                    {order.items.map((item: any, index: number) => (
-                        <Row key={index} style={itemRow}>
-                            <Column style={{ width: "70%" }}>
-                                <Text style={itemName}>
-                                    {item.name}
+    return (
+        <Html>
+            <Head />
+            <Preview>Your AroNutra order #{order.orderId} is confirmed</Preview>
+            <Body style={main}>
+                <Container style={container}>
+                    {/* Brand Header */}
+                    <Section style={headerSection}>
+                        <Text style={brandLabel}>AroNutra Wellness Private Limited</Text>
+                    </Section>
 
-                                    {item.selectedWeight && (
-                                        <>
-                                            {" "}
-                                            • {item.selectedWeight}
-                                        </>
-                                    )}
+                    {/* Main Heading */}
+                    <Heading style={h1}>Order Confirmed</Heading>
 
-                                    <span style={itemQty}>
-                                        {" "}x {item.quantity}
-                                    </span>
-                                </Text>
+                    <Text style={text}>
+                        Hi {userEmail},<br /><br />
+                        Thank you for your purchase. We have received your order and are preparing it for dispatch.
+                        Below are the details of your selection from the Collective.
+                    </Text>
+
+                    {/* Order ID Label */}
+                    <Section style={orderIdSection}>
+                        <Text style={orderIdText}>REFERENCE ID: #{order.orderId}</Text>
+                    </Section>
+
+                    {/* Items Table */}
+                    <Section style={itemSection}>
+                        {order.items.map((item: any, index: number) => (
+                            <Row key={index} style={itemRow}>
+                                <Column style={{ width: "70%" }}>
+                                    <Text style={itemName}>
+                                        {item.name}
+
+                                        {item.selectedWeight && (
+                                            <>
+                                                {" "}
+                                                • {item.selectedWeight}
+                                            </>
+                                        )}
+
+                                        <span style={itemQty}>
+                                            {" "}x {item.quantity}
+                                        </span>
+                                    </Text>
+                                </Column>
+                                <Column style={{ width: "30%", textAlign: "right" as const }}>
+                                    <Text style={itemPrice}>₹{item.sellingPrice * item.quantity}</Text>
+                                </Column>
+                            </Row>
+                        ))}
+                    </Section>
+
+                    <Hr style={divider} />
+
+                    {/* Total Section */}
+                    <Section style={totalSection}>
+                        <Row>
+                            <Column>
+                                <Text style={totalLabel}>TOTAL AMOUNT</Text>
                             </Column>
-                            <Column style={{ width: "30%", textAlign: "right" as const }}>
-                                <Text style={itemPrice}>₹{item.sellingPrice * item.quantity}</Text>
+                            <Column align="right">
+                                <Text style={totalAmount}>₹{order.totalAmount}</Text>
                             </Column>
                         </Row>
-                    ))}
-                </Section>
+                    </Section>
 
-                <Hr style={divider} />
+                    {/* Expected Delivery */}
+                    <Section style={deliverySection}>
+                        <Text style={deliveryLabel}>
+                            EXPECTED DELIVERY
+                        </Text>
 
-                {/* Total Section */}
-                <Section style={totalSection}>
-                    <Row>
-                        <Column>
-                            <Text style={totalLabel}>TOTAL AMOUNT</Text>
-                        </Column>
-                        <Column align="right">
-                            <Text style={totalAmount}>₹{order.totalAmount}</Text>
-                        </Column>
-                    </Row>
-                </Section>
+                        <Text style={deliveryDateStyle}>
+                            {deliveryDate}
+                        </Text>
 
-                {/* Information Grid */}
-                <Section style={infoSection}>
-                    <Row>
-                        <Column style={infoColumn}>
-                            <Text style={infoHeading}>Shipping Address</Text>
-                            <Text style={infoContent}>
-                                {order.shippingAddress.fullName}<br />
-                                {order.shippingAddress.streetAddress}<br />
-                                {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}<br />
-                                {order.shippingAddress.phone}
-                            </Text>
-                        </Column>
-                        <Column style={infoColumn}>
-                            <Text style={infoHeading}>Payment & Status</Text>
-                            <Text style={infoContent}>
-                                <strong>Method:</strong> {order.paymentDetails.method.toUpperCase()}<br />
-                                <strong>Payment:</strong> {order.paymentDetails.status}<br />
-                                <strong>Order:</strong> {order.status}
-                            </Text>
-                        </Column>
-                    </Row>
-                </Section>
+                        <Text style={deliveryNote}>
+                            Your order is expected to arrive within 7 business days from the date it was placed.
+                        </Text>
+                    </Section>
 
-                <Text style={footerText}>
-                    You will receive another notification with tracking details once your package has been shipped.<br />
-                    Exclusively for the AroNutra Collective.
-                </Text>
-            </Container>
-        </Body>
-    </Html>
-);
+                    {/* Information Grid */}
+                    <Section style={infoSection}>
+                        <Row>
+                            <Column style={infoColumn}>
+                                <Text style={infoHeading}>Shipping Address</Text>
+                                <Text style={infoContent}>
+                                    {order.shippingAddress.fullName}<br />
+                                    {order.shippingAddress.streetAddress}<br />
+                                    {order.shippingAddress.city}, {order.shippingAddress.state} - {order.shippingAddress.pincode}<br />
+                                    {order.shippingAddress.phone}
+                                </Text>
+                            </Column>
+                            <Column style={infoColumn}>
+                                <Text style={infoHeading}>Payment & Status</Text>
+                                <Text style={infoContent}>
+                                    <strong>Method:</strong> {order.paymentDetails.method.toUpperCase()}<br />
+                                    <strong>Payment:</strong> {order.paymentDetails.status}<br />
+                                    <strong>Order:</strong> {order.status}
+                                </Text>
+                            </Column>
+                        </Row>
+                    </Section>
+
+                    <Text style={footerText}>
+                        You will receive another notification with tracking details once your package has been shipped.<br />
+                        Exclusively for the AroNutra Collective.
+                    </Text>
+                </Container>
+            </Body>
+        </Html>
+    );
+};
 
 export default OrderConfirmationEmail;
 
@@ -221,6 +251,38 @@ const totalAmount = {
     color: "#d4af37",
     fontSize: "20px",
     fontWeight: "bold",
+};
+
+const deliverySection = {
+    backgroundColor: "rgba(212, 175, 55, 0.08)",
+    border: "1px solid rgba(212, 175, 55, 0.2)",
+    borderRadius: "10px",
+    padding: "18px",
+    margin: "28px 0",
+};
+
+const deliveryLabel = {
+    color: "#d4af37",
+    fontSize: "11px",
+    fontWeight: "bold",
+    letterSpacing: "2px",
+    textTransform: "uppercase" as const,
+    margin: "0 0 10px",
+};
+
+const deliveryDateStyle = {
+    color: "#FDFCF8",
+    fontSize: "22px",
+    fontStyle: "italic",
+    fontWeight: "bold",
+    margin: "0 0 8px",
+};
+
+const deliveryNote = {
+    color: "rgba(253,252,248,0.65)",
+    fontSize: "12px",
+    lineHeight: "18px",
+    margin: 0,
 };
 
 const infoSection = {

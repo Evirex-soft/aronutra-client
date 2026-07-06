@@ -10,9 +10,22 @@ import Link from "next/link";
 export default async function OrderSuccessPage({ params }: { params: Promise<{ orderId: string }> }) {
     const { orderId } = await params;
     const order = await getOrderById(orderId);
-    const isPaid = order?.paymentDetails.status === "Paid";
 
     if (!order) return notFound();
+
+    const isPaid = order?.paymentDetails.status === "Paid";
+
+    const orderDate = new Date(order.createdAt);
+    const expectedDeliveryDate = new Date(orderDate);
+    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
+
+    const deliveryDate = expectedDeliveryDate.toLocaleDateString("en-IN", {
+        weekday: "short",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+
 
     return (
         <div className="min-h-screen bg-[#052c22] print:bg-white text-white print:text-black selection:bg-[#d4af37] selection:text-[#052c22] overflow-x-hidden relative">
@@ -119,6 +132,24 @@ export default async function OrderSuccessPage({ params }: { params: Promise<{ o
                                     Contact: {order.shippingAddress.phone}
                                 </p>
                             </div>
+                        </div>
+
+                        {/* Expected Delivery */}
+                        <div className="bg-white/[0.02] border border-white/10 rounded-3xl p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <CheckCircle2 size={16} className="text-[#d4af37]" />
+                                <h2 className="text-[10px] font-black uppercase tracking-widest text-white/50">
+                                    Expected Delivery
+                                </h2>
+                            </div>
+
+                            <p className="text-2xl font-serif text-[#d4af37]">
+                                {deliveryDate}
+                            </p>
+
+                            <p className="mt-2 text-xs text-white/50">
+                                Usually delivered within 7 business days.
+                            </p>
                         </div>
 
                         {/* Payment Info */}

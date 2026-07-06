@@ -1,5 +1,6 @@
 import { getPackages, getSingleProducts } from "@/lib/data";
 import { ProductCard } from "@/components/ProductCard";
+import BannerActions from "@/components/BannerActions";
 import { ArrowRight, Award, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -79,7 +80,7 @@ export default async function CollectionPage() {
                                     </div>
 
                                     {/* Compact Price Card */}
-                                    <div className="w-full max-w-[340px]">
+                                    <div className="w-full max-w-[400px]">
                                         <div className="bg-[#052c22] p-7 lg:p-8 rounded-[2rem] text-white text-center shadow-2xl">
                                             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4af37] mb-3">
                                                 Complete Package
@@ -89,13 +90,15 @@ export default async function CollectionPage() {
                                                 <p className="text-white/30 line-through text-sm tracking-widest">₹{bundleMrp.toLocaleString()}</p>
                                             </div>
 
-                                            <Link
+
+                                            {/* <Link
                                                 href={`/products/${discoveryPackage.slug}`}
                                                 className="w-full bg-[#d4af37] text-[#052c22] py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95"
                                             >
                                                 Shop Now
                                                 <ArrowRight size={14} />
-                                            </Link>
+                                            </Link> */}
+                                            <BannerActions product={discoveryPackage} />
                                         </div>
                                     </div>
                                 </div>

@@ -177,7 +177,7 @@ export default async function ProductDetailPage({
             <div className="space-y-8">
               <div>
                 <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Ingredients</p>
-                <p className="text-sm text-white/70">{product.ingredients || "100% Pure Honey"}</p>
+                <p className="text-sm text-white/70 whitespace-pre-line">{product.ingredients || "100% Pure Honey"}</p>
               </div>
               <div>
                 <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Usage Instructions</p>

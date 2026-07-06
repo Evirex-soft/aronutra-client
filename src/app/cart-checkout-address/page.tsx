@@ -52,10 +52,14 @@ export default function CheckoutAddressPage() {
   }, []);
 
   useEffect(() => {
-    const savedAddress = localStorage.getItem(STORAGE_KEYS.SHIPPING_ADDRESS)
+    const savedAddress = localStorage.getItem(STORAGE_KEYS.SHIPPING_ADDRESS);
+    const lastUsedAddress = localStorage.getItem(STORAGE_KEYS.LAST_USED_ADDRESS);
+
     if (savedAddress) {
       setFormData(JSON.parse(savedAddress))
       localStorage.removeItem(STORAGE_KEYS.SHIPPING_ADDRESS)
+    } else if (lastUsedAddress) {
+      setFormData(JSON.parse(lastUsedAddress))
     }
   }, []);
 
@@ -189,19 +193,20 @@ export default function CheckoutAddressPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 {[
-                  { label: "Full Name", field: "fullName", placeholder: "e.g. John Doe", col: "md:col-span-2" },
-                  { label: "Phone Number", field: "phone", placeholder: "10-digit mobile number" },
-                  { label: "Email Address", field: "email", placeholder: "john.doe@example.com" },
-                  { label: "Street Address", field: "streetAddress", placeholder: "House no, Building, Area", col: "md:col-span-2" },
-                  { label: "City", field: "city", placeholder: "City" },
-                  { label: "State", field: "state", placeholder: "State" },
-                  { label: "Pincode", field: "pincode", placeholder: "6-digit code", col: "md:col-span-2" },
+                  { label: "Full Name", field: "fullName", autoComplete: "name", placeholder: "e.g. John Doe", col: "md:col-span-2" },
+                  { label: "Phone Number", field: "phone", autoComplete: "tel", placeholder: "10-digit mobile number" },
+                  { label: "Email Address", field: "email", autoComplete: "email", placeholder: "john.doe@example.com" },
+                  { label: "Street Address", field: "streetAddress", autoComplete: "street-address", placeholder: "House no, Building, Area", col: "md:col-span-2" },
+                  { label: "City", field: "city", autoComplete: "address-level2", placeholder: "City" },
+                  { label: "State", field: "state", autoComplete: "address-level1", placeholder: "State" },
+                  { label: "Pincode", field: "pincode", autoComplete: "postal-code", placeholder: "6-digit code", col: "md:col-span-2" },
                 ].map((input) => (
                   <div key={input.field} className={input.col || ""}>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-400 mb-2">
                       {input.label}
                     </label>
                     <input
+                      autoComplete={input.autoComplete}
                       type="text"
                       placeholder={input.placeholder}
                       value={(formData as any)[input.field]}

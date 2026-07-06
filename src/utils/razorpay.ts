@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { SavedCheckout } from "@/types/checkout";
+import { STORAGE_KEYS } from "@/constants/storage";
 
 
 export const loadRazorpay = () => {
@@ -73,6 +74,7 @@ export async function openRazorpay(
                     toast.success("Order Placed Successfully!");
                     clearCart();
                     localStorage.removeItem("checkout_data");
+                    localStorage.setItem(STORAGE_KEYS.LAST_USED_ADDRESS, JSON.stringify(formData));
                     router.push(`/order-confirmation/${result.orderId}`);
                 } else {
                     toast.error(result.message || "Verification failed. Contact Support.");

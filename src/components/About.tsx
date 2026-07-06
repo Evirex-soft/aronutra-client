@@ -98,44 +98,44 @@ const AboutSection = () => {
         </div>
 
         {/* NARRATIVE GRID: THREE PILLARS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-24 items-stretch">
 
           {/* Pillar 1: Nature's Landscapes */}
-          <div className="reveal-text space-y-8">
-            <div className="h-[1px] w-full bg-white/10" />
-            <h3 className="font-serif text-2xl italic">Inspired by Landscapes</h3>
-            <p className="font-sans text-white/60 leading-relaxed font-light">
+          <div className="reveal-text flex flex-col h-full">
+            <div className="h-[1px] w-full bg-white/10 mb-8" />
+            <h3 className="font-serif text-2xl italic mb-6">Inspired by Landscapes</h3>
+            <p className="flex-1 font-sans text-white/60 leading-relaxed font-light">
               Across forests, farms, and hills, bees create honey that reflects the environment around them.
               We carefully source from unique floral regions to preserve these signatures.
               <span className="text-white block mt-2 font-normal">This is nature in its purest form.</span>
             </p>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
+            <div className="pt-8 text-[10px] font-bold uppercase tracking-widest text-primary/80">
               Pure Honey • Farm Sourced
             </div>
           </div>
 
           {/* Pillar 2: The Raw Movement */}
-          <div className="reveal-text space-y-8">
-            <div className="h-[1px] w-full bg-white/10" />
-            <h3 className="font-serif text-2xl italic">The Raw Revolution</h3>
-            <p className="font-sans text-white/60 leading-relaxed font-light">
+          <div className="reveal-text flex flex-col h-full">
+            <div className="h-[1px] w-full bg-white/10 mb-8" />
+            <h3 className="font-serif text-2xl italic mb-6">The Raw Revolution</h3>
+            <p className="flex-1 font-sans text-white/60 leading-relaxed font-light">
               In a world of processed foods, thousands are rediscovering the authenticity of <span className="text-white">Raw Honey India</span>.
               We preserve the enzymes and nutrients already provided by nature, delivering a trust that is tasted in every drop.
             </p>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
+            <div className="pt-8 text-[10px] font-bold uppercase tracking-widest text-primary/80">
               Healthy Lifestyle • Natural Health
             </div>
           </div>
 
           {/* Pillar 3: Wellness Movement */}
-          <div className="reveal-text space-y-8">
-            <div className="h-[1px] w-full bg-white/10" />
-            <h3 className="font-serif text-2xl italic">A Wellness Ecosystem</h3>
-            <p className="font-sans text-white/60 leading-relaxed font-light">
+          <div className="reveal-text flex flex-col h-full">
+            <div className="h-[1px] w-full bg-white/10 mb-8" />
+            <h3 className="font-serif text-2xl italic mb-6">A Wellness Ecosystem</h3>
+            <p className="flex-1 font-sans text-white/60 leading-relaxed font-light">
               Our vision goes beyond the jar. We are building a movement—from wellness nutrition to innovative drink mixes.
               Aronutra helps people embrace a <span className="text-white">Nature Inspired Wellness</span> journey that isn&apos;t a trend, but a way of life.
             </p>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-primary/80">
+            <div className="pt-8 text-[10px] font-bold uppercase tracking-widest text-primary/80">
               Kerala Wellness Brand • Future Forward
             </div>
           </div>

@@ -54,7 +54,7 @@ export default function AboutPage() {
 
                         <div className="space-y-12">
                             <div className="space-y-6">
-                                <h2 className="text-3xl md:text-4xl font-serif tracking-tight text-white">The Wayanad Spirit</h2>
+                                <h2 className="text-3xl md:text-4xl font-serif tracking-tight text-white">The Wayanadan Spirit</h2>
                                 <p className="text-white/70 leading-relaxed text-lg">
                                     AroNutra was born in 2024 amidst the fertile biodiversity of the Western Ghats. We witnessed the raw power of wholesome ingredients and realized that the modern world had lost its connection to true nourishment.
                                 </p>
