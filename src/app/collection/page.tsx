@@ -75,7 +75,7 @@ export default async function CollectionPage() {
                                             alt={discoveryPackage.name}
                                             width={800}
                                             height={800}
-                                            className="w-full max-w-[600px] h-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.18)] hover:scale-105 transition-transform duration-700"
+                                            className="w-full max-w-[600px] h-auto object-contain rounded-4xl drop-shadow-[0_40px_80px_rgba(0,0,0,0.18)] hover:scale-105 transition-transform duration-700"
                                         />
                                     </div>
 
