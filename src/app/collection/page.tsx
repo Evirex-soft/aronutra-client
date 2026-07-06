@@ -32,75 +32,58 @@ export default async function CollectionPage() {
                 {/* THE PACKAGE BANNER - Only show if a package exists */}
                 {discoveryPackage && (
                     <section className="mb-24 relative">
-                        <div className="bg-[#FFFDF8] border border-[#E8D9A8]/40 rounded-[3rem] p-8 lg:p-16 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.08)] relative group">
+                        <div className="bg-[#FFFDF8] border border-[#E8D9A8]/40 rounded-[3rem] p-8 lg:p-12 overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.08)] relative">
 
-                            {/* Decorative Elements */}
+                            {/* Decorative Background Circles */}
                             <div className="absolute top-0 right-0 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-3xl -mr-20 -mt-20" />
                             <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#052c22]/5 rounded-full blur-3xl -ml-20 -mb-20" />
 
-                            <div className="grid lg:grid-cols-[1fr_580px] gap-12 items-center">
-                                {/* Left Content */}
-                                <div className="space-y-8 relative z-10">
-                                    <div className="inline-flex items-center gap-3 bg-[#052c22] text-white px-5 py-2 rounded-full">
-                                        <Award size={14} className="text-[#d4af37]" />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">
-                                            {discoveryPackage.productType || "The Signature Collection"}
-                                        </span>
+                            <div className="relative z-10">
+                                {/* Top Part: Two Columns */}
+                                <div className="grid lg:grid-cols-[1fr_450px] gap-12 items-center mb-12">
+
+                                    {/* Left: Text Content */}
+                                    <div className="space-y-6">
+                                        <div className="inline-flex items-center gap-3 bg-[#052c22] text-white px-5 py-2 rounded-full">
+                                            <Award size={14} className="text-[#d4af37]" />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">
+                                                {discoveryPackage.productType || "The Signature Collection"}
+                                            </span>
+                                        </div>
+
+                                        <h2 className="text-4xl lg:text-6xl font-serif text-[#052c22] leading-tight">
+                                            {discoveryPackage.name}
+                                        </h2>
+
+                                        <p className="text-[#052c22]/70 text-base lg:text-lg font-light italic max-w-xl leading-relaxed">
+                                            {discoveryPackage.shortDescription}
+                                        </p>
+
+                                        <div className="grid grid-cols-2 gap-4 max-w-md">
+                                            {["12 Unique Jars", "50g Per Variety", "Signature Gift Box", "Limited Harvest"].map((feat) => (
+                                                <div key={feat} className="flex items-center gap-2 text-[#052c22] text-[9px] font-black uppercase tracking-widest">
+                                                    <CheckCircle2 size={12} className="text-[#d4af37]" />
+                                                    {feat}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
-                                    <h2 className="text-5xl lg:text-7xl font-serif text-[#052c22] leading-[1.1] tracking-tight">
-                                        {discoveryPackage.name}
-                                    </h2>
-
-                                    <p className="text-[#052c22]/70 text-lg lg:text-xl font-light italic max-w-xl leading-relaxed">
-                                        {discoveryPackage.shortDescription}
-                                    </p>
-
-                                    <div className="grid grid-cols-2 gap-y-4 gap-x-8 max-w-md">
-                                        {/* You can either hardcode these or map from a field in your DB */}
-                                        {["12 Unique Jars", "50g Per Variety", "Signature Gift Box", "Limited Harvest"].map((feat) => (
-                                            <div key={feat} className="flex items-center gap-2 text-[#052c22] text-[10px] font-black uppercase tracking-widest">
-                                                <CheckCircle2 size={14} className="text-[#d4af37]" />
-                                                {feat}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Right Side */}
-                                <div className="relative z-10 flex flex-col items-center">
-                                    <div className="relative flex justify-center mb-4">
+                                    {/* Right: Product Image */}
+                                    <div className="flex justify-center lg:justify-end">
                                         <Image
                                             src={discoveryPackage.images[0] || "/images/packet.png"}
                                             alt={discoveryPackage.name}
                                             width={800}
                                             height={800}
-                                            className="w-full max-w-[600px] h-auto object-contain rounded-4xl drop-shadow-[0_40px_80px_rgba(0,0,0,0.18)] hover:scale-105 transition-transform duration-700"
+                                            className="w-full max-w-[450px] md:max-w-[550px] lg:max-w-[650px] xl:max-w-[750px] h-auto object-contain rounded-4xl drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)]"
                                         />
                                     </div>
+                                </div>
 
-                                    {/* Compact Price Card */}
-                                    <div className="w-full max-w-[400px]">
-                                        <div className="bg-[#052c22] p-7 lg:p-8 rounded-[2rem] text-white text-center shadow-2xl">
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                                                Complete Package
-                                            </p>
-                                            <div className="space-y-1 mb-7">
-                                                <p className="text-4xl font-light">₹{bundlePrice.toLocaleString()}</p>
-                                                <p className="text-white/30 line-through text-sm tracking-widest">₹{bundleMrp.toLocaleString()}</p>
-                                            </div>
-
-
-                                            {/* <Link
-                                                href={`/products/${discoveryPackage.slug}`}
-                                                className="w-full bg-[#d4af37] text-[#052c22] py-4 rounded-xl font-black uppercase tracking-[0.2em] text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95"
-                                            >
-                                                Shop Now
-                                                <ArrowRight size={14} />
-                                            </Link> */}
-                                            <BannerActions product={discoveryPackage} />
-                                        </div>
-                                    </div>
+                                {/* Bottom Part: Action Bar (Centered and Compact) */}
+                                <div className="max-w-4xl mx-auto">
+                                    <BannerActions product={discoveryPackage} />
                                 </div>
                             </div>
                         </div>

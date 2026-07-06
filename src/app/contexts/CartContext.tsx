@@ -226,7 +226,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
 
-    const buyNow = (product: CartItem) => {
+    const buyNow = (product: CartItem, quantity: number = 1) => {
         const existingItem = cart.find(item =>
             product.selectedVariantId
                 ? (item._id === product._id && item.selectedVariantId === product.selectedVariantId)
@@ -240,17 +240,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 const isSame = product.selectedVariantId
                     ? (item._id === product._id && item.selectedVariantId === product.selectedVariantId)
                     : item._id === product._id;
-                return isSame ? { ...item, quantity: item.quantity + 1 } : item;
+                return isSame ? { ...item, quantity: item.quantity + quantity } : item;
             });
         } else {
-            updatedCart = [...cart, { ...product, quantity: 1 }];
+            updatedCart = [...cart, { ...product, quantity }];
         }
 
-        // 2. Update the actual state for the rest of the app
+        // Update the actual state for the rest of the app
         setCart(updatedCart);
 
-        // 3. IMPORTANT: Manually calculate totals using 'updatedCart' 
-        // instead of the stale 'cart' state variable
+        // Manually calculate totals using 'updatedCart' 
         const originalTotal = updatedCart.reduce((total, item) => total + item.mrp * item.quantity, 0);
         const cartTotal = updatedCart.reduce((total, item) => total + item.sellingPrice * item.quantity, 0);
         const discount = originalTotal - cartTotal;
