@@ -177,7 +177,25 @@ export default async function ProductDetailPage({
             <div className="space-y-8">
               <div>
                 <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Ingredients</p>
-                <p className="text-sm text-white/70 whitespace-pre-line">{product.ingredients || "100% Pure Honey"}</p>
+                <div className="text-sm text-white/70 leading-relaxed space-y-2">
+                  {(product.ingredients || "100% Pure Honey")
+                    .split(/([.:])/) // Split by . or : and keep the character
+                    .reduce((acc: string[], current: any, i: any, arr: any) => {
+                      // This logic joins the text back with its punctuation
+                      if (i % 2 === 0) {
+                        const nextPunc = arr[i + 1] || "";
+                        acc.push(current + nextPunc);
+                      }
+                      return acc;
+                    }, [])
+                    .map((line: any, index: any) => (
+                      line.trim() && (
+                        <span key={index} className="block">
+                          {line.trim()}
+                        </span>
+                      )
+                    ))}
+                </div>
               </div>
               <div>
                 <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/40 mb-3">Usage Instructions</p>

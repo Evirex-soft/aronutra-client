@@ -157,7 +157,7 @@ const HeroSection = () => {
 
           <h1
             className="mb-6 leading-[0.92] tracking-tighter text-white"
-            style={{ fontSize: "clamp(2.2rem, 7vw, 6.5rem)" }}
+            style={{ fontSize: "clamp(1.9rem, 4.9vw + 0.4rem, 5.4rem)" }}
           >
             <div className="overflow-hidden pb-2">
               <span className="hero-mask-line inline-block font-sans font-black uppercase">
