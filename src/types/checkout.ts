@@ -15,6 +15,7 @@ export interface SavedCheckout {
         cartTotal: number;
         discount: number;
         couponDiscount: number;
+        shippingFee: number;
         finalTotal: number;
     };
 }

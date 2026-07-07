@@ -35,6 +35,7 @@ interface CartContextType {
     getCartOriginalTotal: () => number;
     getCartDiscount: () => number;
     getCartWeight: () => number;
+    getShippingFee: () => number;
     applyCoupon: (coupon: Coupon) => void;
     removeCoupon: () => void;
     getCouponDiscount: () => number;
@@ -87,6 +88,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 cartTotal: getCartTotal(),
                 discount: getCartDiscount(),
                 couponDiscount: getCouponDiscount(),
+                shippingFee: getShippingFee(),
                 finalTotal: getFinalTotal(),
             },
             savedAt: new Date().toISOString(),
@@ -262,7 +264,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
                 cartTotal,
                 discount,
                 couponDiscount: getCouponDiscount(), // This is fine if coupon doesn't change
-                finalTotal: cartTotal - getCouponDiscount(),
+                shippingFee: getShippingFee(),
+                finalTotal: cartTotal - getCouponDiscount() + getShippingFee(),
             },
             savedAt: new Date().toISOString(),
         };
@@ -338,9 +341,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         return 0;
     };
 
+    const getShippingFee = () => {
+        if (cart.length === 0) return 0;
+        const netTotal = getCartTotal() - getCouponDiscount();
+        return netTotal < 500 ? 50 : 0;
+    };
+
     const getFinalTotal = () => {
-        const total = getCartTotal() - getCouponDiscount();
-        return Math.max(0, total);
+        const netTotal = getCartTotal() - getCouponDiscount();
+        const shipping = getShippingFee();
+        return Math.max(0, netTotal + shipping);
     };
 
     if (!isHydrated) return null;
@@ -353,6 +363,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             removeCoupon,
             getCouponDiscount,
             getCartWeight,
+            getShippingFee,
             getFinalTotal,
             saveCheckoutData,
             clearCart

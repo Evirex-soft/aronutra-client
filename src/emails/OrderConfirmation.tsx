@@ -25,6 +25,10 @@ export const OrderConfirmationEmail = ({
 
     const orderDate = new Date(order.createdAt);
 
+    const subtotal = order.items.reduce((acc: number, item: any) => acc + (item.sellingPrice * item.quantity), 0);
+    const shippingFee = order.shippingFee || 0;
+    const couponDiscount = order.appliedCoupon?.amountSaved || 0;
+
     const expectedDeliveryDate = new Date(orderDate);
     expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
 
@@ -90,14 +94,37 @@ export const OrderConfirmationEmail = ({
                     <Hr style={divider} />
 
                     {/* Total Section */}
-                    <Section style={totalSection}>
-                        <Row>
-                            <Column>
-                                <Text style={totalLabel}>TOTAL AMOUNT</Text>
-                            </Column>
+                    <Section style={summarySection}>
+                        {/* Subtotal Row */}
+                        <Row style={summaryRow}>
+                            <Column><Text style={summaryLabel}>SUBTOTAL</Text></Column>
+                            <Column align="right"><Text style={summaryValue}>₹{subtotal}</Text></Column>
+                        </Row>
+
+                        {/* Coupon Row */}
+                        {couponDiscount > 0 && (
+                            <Row style={summaryRow}>
+                                <Column><Text style={summaryLabel}>PRIVILEGE DISCOUNT</Text></Column>
+                                <Column align="right"><Text style={discountValue}>-₹{couponDiscount}</Text></Column>
+                            </Row>
+                        )}
+
+                        {/* Shipping Row */}
+                        <Row style={summaryRow}>
+                            <Column><Text style={summaryLabel}>SHIPPING & HANDLING</Text></Column>
                             <Column align="right">
-                                <Text style={totalAmount}>₹{order.totalAmount}</Text>
+                                <Text style={shippingFee === 0 ? discountValue : summaryValue}>
+                                    {shippingFee === 0 ? "FREE" : `₹${shippingFee}`}
+                                </Text>
                             </Column>
+                        </Row>
+
+                        <Hr style={divider} />
+
+                        {/* Final Total */}
+                        <Row>
+                            <Column><Text style={totalLabel}>TOTAL AMOUNT</Text></Column>
+                            <Column align="right"><Text style={totalAmount}>₹{order.totalAmount}</Text></Column>
                         </Row>
                     </Section>
 
@@ -317,4 +344,33 @@ const footerText = {
     textTransform: "uppercase" as const,
     letterSpacing: "1px",
     marginTop: "40px",
+};
+
+const summarySection = {
+    marginTop: "20px",
+    padding: "0 0 20px 0",
+};
+
+const summaryRow = {
+    marginBottom: "8px",
+};
+
+const summaryLabel = {
+    color: "rgba(253, 252, 248, 0.4)",
+    fontSize: "10px",
+    letterSpacing: "1px",
+    margin: 0,
+};
+
+const summaryValue = {
+    color: "#FDFCF8",
+    fontSize: "12px",
+    margin: 0,
+};
+
+const discountValue = {
+    color: "#4ade80", // A soft green for discounts/free shipping
+    fontSize: "12px",
+    fontWeight: "bold",
+    margin: 0,
 };

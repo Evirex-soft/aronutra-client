@@ -69,6 +69,8 @@ export async function POST(req: Request) {
                 selectedWeight: item.selectedWeight
             })),
             totalAmount: body.totals.finalTotal,
+            shippingFee: body.totals.shippingFee,
+            discountAmount: body.totals.discount + (body.totals.couponDiscount || 0),
             appliedCoupon: body.appliedCoupon ? {
                 code: body.appliedCoupon.code,
                 amountSaved: body.totals.couponDiscount,

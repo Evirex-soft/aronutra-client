@@ -246,71 +246,100 @@ export default function CheckoutAddressPage() {
               </div>
 
               {checkoutData ? (
-                <div className="space-y-6 mb-8">
-                  {checkoutData.cart.map((product) => (
-                    <div key={`${product._id}-${product.selectedVariantId || "default"}`} className="flex gap-4 items-center">
-                      <div className="w-16 h-16 bg-stone-50 rounded-xl p-2 border border-stone-100 flex-shrink-0">
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                <div className="space-y-6">
+                  {/* Product List */}
+                  <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    {checkoutData.cart.map((product) => (
+                      <div key={`${product._id}-${product.selectedVariantId || "default"}`} className="flex gap-4 items-start py-2">
+                        <div className="w-16 h-16 bg-white rounded-xl p-2 border border-stone-100 flex-shrink-0 shadow-sm">
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <h3 className="text-[13px] font-serif text-[#052c22] leading-tight truncate">
+                            {product.name}
+                          </h3>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[9px] font-bold text-stone-400 uppercase tracking-tighter">
+                              Qty: {product.quantity}
+                            </span>
+                            {product.selectedWeight && (
+                              <span className="text-[9px] font-black text-[#d4af37] uppercase tracking-widest bg-[#d4af37]/5 px-1.5 py-0.5 rounded">
+                                {product.selectedWeight}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs font-bold text-[#052c22] mt-1">
+                            ₹{(product.sellingPrice * product.quantity).toLocaleString()}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-grow min-w-0">
-                        <h3 className="text-sm font-serif truncate">
-                          {product.name}
-                        </h3>
+                    ))}
+                  </div>
 
-                        {product.selectedWeight && (
-                          <span className="inline-block mt-1 px-2 py-1 bg-[#d4af37]/10 text-[#d4af37] rounded-md text-[9px] font-bold uppercase tracking-widest">
-                            {product.selectedWeight}
-                          </span>
-                        )}
-
-                        <p className="mt-2 text-[10px] text-stone-400 font-bold uppercase tracking-tighter">
-                          Qty: {product.quantity}
-                        </p>
-
-                        <p className="text-sm font-sans font-bold text-[#d4af37]">
-                          ₹{product.sellingPrice * product.quantity}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-
+                  {/* Pricing Breakdown */}
                   <div className="pt-6 border-t border-stone-100 space-y-3">
-
-                    <div className="flex justify-between text-xs">
-                      <span>MRP Total</span>
-                      <span>₹{checkoutData.totals.originalTotal}</span>
+                    {/* MRP Row */}
+                    <div className="flex justify-between text-[11px] uppercase tracking-wider text-stone-400 font-medium">
+                      <span>Total MRP</span>
+                      <span className="line-through">₹{checkoutData.totals.originalTotal.toLocaleString()}</span>
                     </div>
 
-                    <div className="flex justify-between text-xs text-green-600">
-                      <span>Product Discount</span>
-                      <span>-₹{checkoutData.totals.discount}</span>
+                    {/* Product Discount Row */}
+                    <div className="flex justify-between text-[11px] uppercase tracking-wider font-bold text-green-600">
+                      <span>Instant Savings</span>
+                      <span>-₹{checkoutData.totals.discount.toLocaleString()}</span>
                     </div>
 
-                    <div className="flex justify-between text-xs font-medium">
-                      <span>Subtotal</span>
-                      <span>₹{checkoutData.totals.cartTotal}</span>
-                    </div>
-
+                    {/* Coupon Row */}
                     {checkoutData.appliedCoupon && (
-                      <div className="flex justify-between text-xs text-green-600">
-                        <span>Coupon Discount</span>
-                        <span>-₹{checkoutData.totals.couponDiscount}</span>
+                      <div className="flex justify-between text-[11px] uppercase tracking-wider font-bold text-green-700 bg-green-50 p-2 rounded-lg border border-green-100">
+                        <span>Code: {checkoutData.appliedCoupon.code}</span>
+                        <span>-₹{checkoutData.totals.couponDiscount.toLocaleString()}</span>
                       </div>
                     )}
 
-                    <div className="flex justify-between items-end pt-4 border-t border-stone-100">
-                      <span className="text-xs font-black uppercase tracking-widest">
-                        Grand Total
-                      </span>
-                      <span className="text-2xl font-bold text-[#052c22]">
-                        ₹{checkoutData.totals.finalTotal}
+                    {/* Delivery Row */}
+                    <div className="flex justify-between text-[11px] uppercase tracking-wider font-medium text-stone-500 pt-1">
+                      <span>Delivery Charge</span>
+                      <span className={checkoutData.totals.shippingFee === 0 ? "text-green-600 font-bold" : "text-[#052c22] font-bold"}>
+                        {checkoutData.totals.shippingFee === 0 ? "FREE" : `+ ₹${checkoutData.totals.shippingFee}`}
                       </span>
                     </div>
 
+                    {/* Grand Total */}
+                    <div className="pt-4 mt-2 border-t border-[#052c22]/5">
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 block mb-1">
+                            Total Payable
+                          </span>
+                          <span className="text-3xl font-serif font-medium text-[#052c22]">
+                            ₹{checkoutData.totals.finalTotal.toLocaleString()}
+                          </span>
+                        </div>
+
+                        {/* Tiny savings tag */}
+                        <div className="text-right pb-1">
+                          <span className="text-[8px] font-black uppercase tracking-widest bg-green-600 text-white px-2 py-1 rounded-full">
+                            Saving ₹{(checkoutData.totals.discount + (checkoutData.totals.couponDiscount || 0)).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Small trust note */}
+                    <p className="text-[9px] text-center text-stone-400 font-medium uppercase tracking-widest pt-4">
+                      Prices include all applicable taxes
+                    </p>
                   </div>
                 </div>
               ) : (
-                <p className="text-stone-400 text-xs py-10 text-center">Your bag is empty.</p>
+                <div className="py-20 text-center">
+                  <div className="w-12 h-12 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <ShoppingBag className="text-stone-300" size={20} />
+                  </div>
+                  <p className="text-stone-400 text-xs uppercase tracking-widest font-bold">Your bag is empty.</p>
+                </div>
               )}
 
               {/* Action Button */}

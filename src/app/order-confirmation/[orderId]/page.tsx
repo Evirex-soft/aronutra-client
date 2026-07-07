@@ -15,6 +15,10 @@ export default async function OrderSuccessPage({ params }: { params: Promise<{ o
 
     const isPaid = order?.paymentDetails.status === "Paid";
 
+    const itemsTotal = order.items.reduce((acc: number, item: any) => acc + (item.sellingPrice * item.quantity), 0);
+    const shippingFee = order.shippingFee || 0;
+    const couponDiscount = order.appliedCoupon?.amountSaved || 0;
+
     const orderDate = new Date(order.createdAt);
     const expectedDeliveryDate = new Date(orderDate);
     expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + 7);
@@ -99,8 +103,44 @@ export default async function OrderSuccessPage({ params }: { params: Promise<{ o
                                 ))}
                             </div>
 
-                            <div className="mt-8 pt-6 border-t border-[#d4af37]/20 print:border-gray-200">
+                            {/* <div className="mt-8 pt-6 border-t border-[#d4af37]/20 print:border-gray-200">
                                 <div className="flex justify-between items-center">
+                                    <div>
+                                        <p className="text-[10px] text-[#d4af37] print:text-black font-black uppercase tracking-widest">Total Amount</p>
+                                        <p className="text-white/30 print:text-gray-400 text-[9px]">Includes Taxes & Shipping</p>
+                                    </div>
+                                    <div className="text-2xl md:text-3xl font-medium text-white print:text-black">
+                                        <span className="text-sm align-top mr-1 font-sans">₹</span>
+                                        {order.totalAmount.toLocaleString()}
+                                    </div>
+                                </div>
+                            </div> */}
+                            <div className="mt-8 pt-6 border-t border-[#d4af37]/20 print:border-gray-200 space-y-3">
+
+                                {/* Subtotal */}
+                                <div className="flex justify-between text-[10px] uppercase tracking-widest text-white/40">
+                                    <span>Subtotal</span>
+                                    <span>₹{itemsTotal.toLocaleString()}</span>
+                                </div>
+
+                                {/* Coupon Discount (if any) */}
+                                {couponDiscount > 0 && (
+                                    <div className="flex justify-between text-[10px] uppercase tracking-widest text-emerald-400">
+                                        <span>Coupon Discount</span>
+                                        <span>-₹{couponDiscount.toLocaleString()}</span>
+                                    </div>
+                                )}
+
+                                {/* Delivery Charge */}
+                                <div className="flex justify-between text-[10px] uppercase tracking-widest text-white/40">
+                                    <span>Delivery Charge</span>
+                                    <span className={shippingFee === 0 ? "text-emerald-400" : "text-white"}>
+                                        {shippingFee === 0 ? "FREE" : `₹${shippingFee}`}
+                                    </span>
+                                </div>
+
+                                {/* Final Total Amount */}
+                                <div className="flex justify-between items-center pt-4 border-t border-white/5">
                                     <div>
                                         <p className="text-[10px] text-[#d4af37] print:text-black font-black uppercase tracking-widest">Total Amount</p>
                                         <p className="text-white/30 print:text-gray-400 text-[9px]">Includes Taxes & Shipping</p>

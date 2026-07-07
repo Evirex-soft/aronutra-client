@@ -39,6 +39,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
     // If you store coupon discount separately
     const couponDiscount = order.appliedCoupon?.amountSaved || 0;
 
+    const shippingFee = order.shippingFee || 0;
     const finalTotal = order.totalAmount;
 
     return (
@@ -134,9 +135,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                                 )}
 
                                 {/* Shipping */}
-                                <div className="flex justify-between text-sm text-white/60">
+                                <div className="flex justify-between text-xs uppercase tracking-widest text-white/40">
                                     <span>Shipping Charge</span>
-                                    <span className="text-green-400">FREE</span>
+                                    <span className={shippingFee === 0 ? "text-green-400 font-bold" : "text-white"}>
+                                        {shippingFee === 0 ? "FREE" : `₹${shippingFee}`}
+                                    </span>
                                 </div>
 
                                 {/* Divider */}
@@ -176,7 +179,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                                     Expected Delivery
                                 </p>
 
-                                <p className="text-xl font-serif italic">
+                                <p className="text-xl font-medium italic">
                                     {deliveryDate}
                                 </p>
 

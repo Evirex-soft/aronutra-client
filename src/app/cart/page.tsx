@@ -13,11 +13,14 @@ export default function CartPage() {
         cart, removeFromCart, updateQuantity, getCartTotal,
         getCartOriginalTotal, getCartDiscount, getCouponDiscount,
         getFinalTotal, appliedCoupon, applyCoupon, removeCoupon,
-        saveCheckoutData
+        saveCheckoutData, getShippingFee
     } = useCart();
 
     const [isCouponModalOpen, setIsCouponModalOpen] = useState(false);
     const holdInterval = useRef<NodeJS.Timeout | null>(null);
+
+    const shippingFee = getShippingFee();
+    const amountForFreeDelivery = 500 - (getCartTotal() - getCouponDiscount());
 
     // UPDATED: Uses item._id instead of item.id
     const handleHold = (id: string, currentQty: number, action: "increase" | "decrease") => {
@@ -164,27 +167,28 @@ export default function CartPage() {
 
                     {/* Checkout Summary remains mostly same but ensures clean decimals */}
                     <div className="lg:col-span-4">
-                        <div className="sticky top-32 bg-white rounded-[32px] p-8 shadow-2xl text-[#052c22]">
-                            <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-8 text-stone-400">
+                        <div className="sticky top-32 bg-white rounded-[32px] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.2)] text-[#052c22]">
+                            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] mb-8 text-stone-400 border-b border-stone-100 pb-4">
                                 Order Summary
                             </h2>
 
-                            <div className="space-y-5">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-stone-500 font-medium">Subtotal</span>
-                                    <span className="font-bold">₹{getCartOriginalTotal().toLocaleString()}</span>
+                            <div className="space-y-4">
+                                {/* Price Rows */}
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-stone-500 font-medium font-sans">Subtotal (MRP)</span>
+                                    <span className="font-semibold text-stone-400 line-through">₹{getCartOriginalTotal().toLocaleString()}</span>
                                 </div>
 
-                                <div className="flex justify-between text-sm">
+                                <div className="flex justify-between items-center text-sm">
                                     <span className="text-stone-500 font-medium">Instant Discount</span>
-                                    <span className="text-green-600 font-bold">-₹{getCartDiscount().toLocaleString()}</span>
+                                    <span className="text-green-600 font-bold bg-green-50 px-2 py-0.5 rounded-md">-₹{getCartDiscount().toLocaleString()}</span>
                                 </div>
 
                                 {appliedCoupon && (
-                                    <div className="flex justify-between text-sm bg-green-50 p-3 rounded-xl border border-green-100">
+                                    <div className="flex justify-between items-center text-sm py-2 border-y border-dashed border-stone-200">
                                         <div>
-                                            <span className="text-green-700 font-bold block text-xs uppercase">{appliedCoupon.code}</span>
-                                            <button onClick={removeCoupon} className="text-[10px] text-red-500 underline uppercase tracking-tighter">Remove</button>
+                                            <span className="text-green-700 font-bold block text-[10px] uppercase tracking-tight">{appliedCoupon.code} Applied</span>
+                                            <button onClick={removeCoupon} className="text-[9px] text-red-500 hover:underline uppercase font-bold">Remove</button>
                                         </div>
                                         <span className="text-green-700 font-bold">-₹{getCouponDiscount().toLocaleString()}</span>
                                     </div>
@@ -193,44 +197,79 @@ export default function CartPage() {
                                 {!appliedCoupon && (
                                     <button
                                         onClick={() => setIsCouponModalOpen(true)}
-                                        className="w-full flex items-center justify-between py-4 border-y border-stone-100 group transition-colors"
+                                        className="w-full flex items-center justify-between py-3 px-4 bg-stone-50 rounded-2xl group hover:bg-[#d4af37]/10 transition-all border border-transparent hover:border-[#d4af37]/20"
                                     >
-                                        <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#052c22]">
-                                            <FaTag className="text-[#d4af37]" /> Apply Privilege Code
+                                        <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[#052c22]">
+                                            <FaTag className="text-[#d4af37]" size={12} /> Apply Privilege Code
                                         </span>
-                                        <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                        <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform text-stone-400" />
                                     </button>
                                 )}
 
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-stone-500 font-medium">Delivery</span>
-                                    <span className="text-green-600 font-bold tracking-widest text-[10px] uppercase font-black">Free</span>
+                                <div className="flex justify-between items-center text-sm pt-2">
+                                    <span className="text-stone-500 font-medium">Delivery Charge</span>
+                                    <span className={`${getShippingFee() === 0 ? "text-green-600" : "text-[#052c22]"} font-bold text-xs uppercase tracking-tighter`}>
+                                        {getShippingFee() === 0 ? "FREE" : `+ ₹${getShippingFee()}`}
+                                    </span>
                                 </div>
 
+                                {/* Dynamic Delivery Progress/Note */}
+                                {getShippingFee() > 0 ? (
+                                    <div className="mt-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-100">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <div className="w-4 h-4 rounded-full bg-amber-100 flex items-center justify-center">
+                                                <span className="text-[10px]">✨</span>
+                                            </div>
+                                            <p className="text-[10px] text-amber-900 font-bold uppercase tracking-tight">
+                                                Add ₹{(500 - (getCartTotal() - getCouponDiscount())).toLocaleString()} for Free Delivery
+                                            </p>
+                                        </div>
+                                        {/* Visual Progress Bar */}
+                                        <div className="w-full h-1.5 bg-amber-100 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-amber-500 transition-all duration-700"
+                                                style={{ width: `${Math.min(((getCartTotal() - getCouponDiscount()) / 500) * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="mt-4 p-3 rounded-2xl bg-green-50 border border-green-100 flex items-center gap-3">
+                                        <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white">
+                                            <ShoppingBag size={12} />
+                                        </div>
+                                        <p className="text-[10px] text-green-700 font-bold uppercase tracking-widest">You've Got Free Shipping</p>
+                                    </div>
+                                )}
+
+                                {/* Total Section */}
                                 <div className="pt-6 mt-6 border-t border-stone-100">
-                                    <div className="flex justify-between items-end mb-2">
-                                        <span className="text-sm font-bold uppercase tracking-[0.1em]">Total Payable</span>
-                                        <span className="text-3xl font-medium text-[#052c22]">₹{getFinalTotal().toLocaleString()}</span>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-stone-400">Total Payable</span>
+                                        <span className="text-3xl font-medium font-medium text-[#052c22]">₹{getFinalTotal().toLocaleString()}</span>
                                     </div>
                                     {(getCartDiscount() > 0 || appliedCoupon) && (
-                                        <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest text-right">
-                                            Total Savings: ₹{(getCartDiscount() + getCouponDiscount()).toLocaleString()}
-                                        </p>
+                                        <div className="text-right">
+                                            <span className="inline-block bg-green-500 text-white text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-sm">
+                                                You Save ₹{(getCartDiscount() + getCouponDiscount()).toLocaleString()}
+                                            </span>
+                                        </div>
                                     )}
                                 </div>
 
                                 <Link href="/cart-checkout-address">
                                     <button
                                         onClick={saveCheckoutData}
-                                        className="w-full mt-8 bg-[#052c22] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:bg-[#0a3d30] transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95"
+                                        className="w-full mt-6 bg-[#052c22] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.2em] text-[11px] hover:bg-[#0a3d30] transition-all flex items-center justify-center gap-3 shadow-[0_10px_20px_rgba(5,44,34,0.2)] active:scale-95 group"
                                     >
-                                        Proceed to Checkout <ArrowRight size={14} />
+                                        Proceed to Checkout <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                     </button>
                                 </Link>
 
-                                <p className="text-[9px] text-center text-stone-400 uppercase tracking-[0.2em] mt-6">
-                                    Secure Checkout Guaranteed
-                                </p>
+                                <div className="flex items-center justify-center gap-2 mt-6 opacity-40">
+                                    <div className="h-[1px] w-4 bg-stone-400"></div>
+                                    <p className="text-[8px] font-bold uppercase tracking-[0.3em]">Secure Checkout Guaranteed</p>
+                                    <div className="h-[1px] w-4 bg-stone-400"></div>
+                                </div>
                             </div>
                         </div>
                     </div>

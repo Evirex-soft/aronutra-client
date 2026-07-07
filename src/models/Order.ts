@@ -22,6 +22,8 @@ export interface IOrder extends Document {
     userId?: string;
     items: any[];
     totalAmount: number;
+    shippingFee: number;
+    discountAmount: number;
     appliedCoupon?: {
         code: string;
         amountSaved: number;
@@ -53,6 +55,8 @@ const OrderSchema = new Schema<IOrder>({
     userId: { type: String },
     items: [OrderItemSchema],
     totalAmount: { type: Number, required: true },
+    shippingFee: { type: Number, default: 0 },
+    discountAmount: { type: Number, default: 0 },
     appliedCoupon: { type: AppliedCouponSchema, required: false },
     shippingAddress: {
         fullName: { type: String, required: true },
