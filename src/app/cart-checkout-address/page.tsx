@@ -255,7 +255,7 @@ export default function CheckoutAddressPage() {
                           <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
                         </div>
                         <div className="flex-grow min-w-0">
-                          <h3 className="text-[13px] font-serif text-[#052c22] leading-tight truncate">
+                          <h3 className="text-[13px] font-medium text-[#052c22] leading-tight truncate">
                             {product.name}
                           </h3>
                           <div className="flex items-center gap-2 mt-1">
@@ -313,7 +313,7 @@ export default function CheckoutAddressPage() {
                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400 block mb-1">
                             Total Payable
                           </span>
-                          <span className="text-3xl font-serif font-medium text-[#052c22]">
+                          <span className="text-3xl font-medium text-[#052c22]">
                             ₹{checkoutData.totals.finalTotal.toLocaleString()}
                           </span>
                         </div>
