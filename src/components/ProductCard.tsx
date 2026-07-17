@@ -14,6 +14,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
     const { toggleWishlist, isProductInWishlist } = useWishlist();
+    console.log("product:", product)
 
     // Logic to handle Variants vs Fixed Product
     const hasVariants = product.variants && product.variants.length > 0;
@@ -31,6 +32,15 @@ export function ProductCard({ product }: ProductCardProps) {
     const displayPrice = hasVariants
         ? product.variants[variantIndex].sellingPrice
         : (product.sellingPrice || 0) * quantity;
+
+    const displayMrp = hasVariants
+        ? product.variants[variantIndex].mrp
+        : (product.mrp || 0) * quantity;
+
+    const discountPercentage =
+        displayMrp > displayPrice
+            ? Math.round(((displayMrp - displayPrice) / displayMrp) * 100)
+            : 0;
 
     const isInWishlist = product._id ? isProductInWishlist(product._id.toString()) : false;
 
@@ -63,8 +73,8 @@ export function ProductCard({ product }: ProductCardProps) {
 
     // URL Construction: Pass the weight/variant selected to the detail page
     const detailUrl = `/products/${product.slug}?${hasVariants
-            ? `weight=${product.variants[variantIndex].weight}`
-            : `qty=${quantity}`
+        ? `weight=${product.variants[variantIndex].weight}`
+        : `qty=${quantity}`
         }`;
 
     return (
@@ -122,12 +132,27 @@ export function ProductCard({ product }: ProductCardProps) {
                         </button>
 
                         <div className="text-center">
-                            <span className="text-sm font-bold text-white block uppercase leading-none">
+                            <div className="flex items-baseline justify-center gap-2">
+                                <span className="text-md sm:text-lg font-black text-[#d4af37] tracking-tight">
+                                    ₹ {displayPrice.toLocaleString()}
+                                </span>
+
+                                {displayMrp > displayPrice && (
+                                    <span className="text-sm text-white/35 line-through">
+                                        ₹ {displayMrp.toLocaleString()}
+                                    </span>
+                                )}
+                            </div>
+
+                            {displayMrp > displayPrice && (
+                                <div className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#b4d3b2]">
+                                    Save {discountPercentage}%
+                                </div>
+                            )}
+
+                            <div className="mt-2 text-xs font-semibold text-white/90 tracking-wide">
                                 {displayWeight}
-                            </span>
-                            <span className="text-[9px] text-[#d4af37] font-black tracking-widest uppercase">
-                                ₹{displayPrice.toLocaleString()}
-                            </span>
+                            </div>
                         </div>
 
                         <button
