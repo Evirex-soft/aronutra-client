@@ -15,7 +15,11 @@ export async function getPackages(): Promise<IProduct[]> {
         const collection = await getProductsCollection();
 
         // Filter specifically for PACKAGE
-        const products = await collection.find({ productType: "PACKAGE", status: "ACTIVE" }).toArray();
+        // Featured first, then oldest first, so the banner package is stable
+        const products = await collection
+            .find({ productType: "PACKAGE", status: "ACTIVE" })
+            .sort({ isFeatured: -1, _id: 1 })
+            .toArray();
 
         return products.map((doc) => ({
             ...doc,

@@ -1,8 +1,7 @@
 import { getPackages, getSingleProducts } from "@/lib/data";
 import { ProductCard } from "@/components/ProductCard";
 import BannerActions from "@/components/BannerActions";
-import { ArrowRight, Award, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { Award, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
@@ -15,15 +14,9 @@ export default async function CollectionPage() {
     const packages = JSON.parse(JSON.stringify(rawPackages));
     const singles = JSON.parse(JSON.stringify(rawSingles));
 
+    // packages are sorted featured-first, then oldest-first (see getPackages)
     const discoveryPackage = packages[0];
-
-    const bundlePrice = discoveryPackage?.sellingPrice || singles
-        .slice(0, 12)
-        .reduce((sum: number, product: any) => sum + (product.sellingPrice || 0), 0);
-
-    const bundleMrp = discoveryPackage?.mrp || singles
-        .slice(0, 12)
-        .reduce((sum: number, product: any) => sum + (product.mrp || 0), 0);
+    const otherPackages = packages.slice(1);
 
     return (
         <div className="pt-32 pb-24 bg-[#052c22] min-h-screen">
@@ -86,6 +79,29 @@ export default async function CollectionPage() {
                                     <BannerActions product={discoveryPackage} />
                                 </div>
                             </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* OTHER PACKAGES - Only show if more than one package exists */}
+                {otherPackages.length > 0 && (
+                    <section className="mb-24">
+                        <header className="mb-20">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-12 h-[1px] bg-[#d4af37]"></div>
+                                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#d4af37]">
+                                    Curated Packs
+                                </span>
+                            </div>
+                            <h2 className="font-m text-4xl md:text-5xl text-white tracking-tight">
+                                Gift &amp; Value Packs
+                            </h2>
+                        </header>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
+                            {otherPackages.map((product: any) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))}
                         </div>
                     </section>
                 )}
