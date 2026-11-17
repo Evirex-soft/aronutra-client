@@ -7,6 +7,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { signupSchema, type SignupInput } from "@/utils/validations";
+import { trackEvent } from "@/lib/metaPixel";
 
 
 const fadeInUp = {
@@ -72,6 +73,9 @@ export default function SignupForm() {
 
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Something went wrong");
+
+            // Meta Pixel: CompleteRegistration after the account is created
+            trackEvent("CompleteRegistration", { content_name: "Signup", status: true });
 
             await signIn("credentials", {
                 email: formData.email,

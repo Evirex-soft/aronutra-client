@@ -6,6 +6,7 @@ import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { newsletterSchema } from "@/utils/validations";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { trackEvent } from "@/lib/metaPixel";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -58,6 +59,8 @@ const Footer: React.FC = () => {
       if (!response.ok) {
         throw new Error(data.message);
       }
+      // Meta Pixel: Lead on successful newsletter signup
+      trackEvent("Lead", { content_name: "Newsletter" });
       toast.success("Successfully subscribed!");
       setIsSubscribed(true);
       setEmail("");

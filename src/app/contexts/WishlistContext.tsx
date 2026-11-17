@@ -3,6 +3,7 @@
 import { STORAGE_KEYS } from "@/constants/storage";
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { toast } from "react-toastify";
+import { trackEvent } from "@/lib/metaPixel";
 
 interface WishlistContextype {
     wishlist: string[];
@@ -37,6 +38,10 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     }, [wishlist]);
 
     const toggleWishlist = (productId: string) => {
+        // Meta Pixel: AddToWishlist (only when adding, not removing)
+        if (!wishlist.includes(productId)) {
+            trackEvent("AddToWishlist", { content_ids: [productId], content_type: "product", currency: "INR" });
+        }
         setWishlist((prevWishlist) => {
             if (prevWishlist.includes(productId)) {
                 // remove from wishlist

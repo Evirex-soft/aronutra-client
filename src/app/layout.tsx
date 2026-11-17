@@ -9,6 +9,7 @@ import { WishlistProvider } from "./contexts/WishlistContext";
 import { CartProvider } from "./contexts/CartContext";
 import SmoothScroll from "@/components/SmoothScroll";
 import Providers from "./Providers";
+import MetaPixel from "@/components/MetaPixel";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -54,6 +55,7 @@ export default function RootLayout({
         </Providers>
 
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+        <MetaPixel />
       </body>
     </html>
   );
