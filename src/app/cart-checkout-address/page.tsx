@@ -20,6 +20,7 @@ import { STORAGE_KEYS } from "@/constants/storage";
 import { useCart } from "@/app/contexts/CartContext";
 import { useSession } from "next-auth/react";
 import { addressSchema } from "@/utils/validations";
+import { trackEvent, itemsPayload } from "@/lib/metaPixel";
 
 type PaymentMethod = "upi" | "card" | "netbanking" | "cod" | "razorpay"
 
@@ -48,6 +49,10 @@ export default function CheckoutAddressPage() {
     if (savedItem) {
       const parsed = JSON.parse(savedItem);
       setCheckoutData(parsed);
+      // Meta Pixel: InitiateCheckout when the checkout page opens with items
+      if (parsed?.cart?.length) {
+        trackEvent("InitiateCheckout", itemsPayload(parsed.cart, parsed.totals?.finalTotal));
+      }
     }
   }, []);
 

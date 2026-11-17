@@ -8,6 +8,7 @@ import { Search, X, Loader2, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/hooks/useDebounce";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackEvent } from "@/lib/metaPixel";
 
 interface Product {
     _id: string;
@@ -54,6 +55,8 @@ export default function NavbarSearch({ isScrolled, isMenuOpen }: { isScrolled: b
             }
             try {
                 setLoading(true);
+                // Meta Pixel: Search (debounced, 2+ characters)
+                trackEvent("Search", { search_string: debouncedQuery, content_type: "product" });
                 const res = await axios.get(`/api/search?q=${encodeURIComponent(debouncedQuery)}`);
                 setProducts(res.data.products || []);
             } catch (err) {

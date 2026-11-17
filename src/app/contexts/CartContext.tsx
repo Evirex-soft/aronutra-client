@@ -4,6 +4,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import { IProduct } from "@/types/product";
 import { toast } from "react-toastify";
 import { STORAGE_KEYS } from "@/constants/storage";
+import { trackEvent, itemsPayload } from "@/lib/metaPixel";
 
 export interface CartItem extends IProduct {
     quantity: number;
@@ -102,6 +103,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (product.stockQuantity <= 0) {
             toast.error(`Sorry, ${product.name} is currently out of stock.`);
             return;
+        }
+
+        // Meta Pixel: AddToCart (skipped when the request exceeds available stock)
+        const alreadyInCart = cart.find(item =>
+            product.selectedVariantId
+                ? item._id === product._id && item.selectedVariantId === product.selectedVariantId
+                : item._id === product._id
+        );
+        if ((alreadyInCart?.quantity || 0) + quantity <= product.stockQuantity) {
+            trackEvent("AddToCart", itemsPayload([{ ...product, quantity }]));
         }
 
         setCart((prevCart) => {
@@ -247,6 +258,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         } else {
             updatedCart = [...cart, { ...product, quantity }];
         }
+
+        // Meta Pixel: Buy Now adds the item to the cart
+        trackEvent("AddToCart", itemsPayload([{ ...product, quantity }]));
 
         // Update the actual state for the rest of the app
         setCart(updatedCart);

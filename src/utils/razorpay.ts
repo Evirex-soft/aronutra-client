@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { SavedCheckout } from "@/types/checkout";
 import { STORAGE_KEYS } from "@/constants/storage";
+import { trackEvent, itemsPayload } from "@/lib/metaPixel";
 
 
 export const loadRazorpay = () => {
@@ -71,6 +72,13 @@ export async function openRazorpay(
                 const result = await saveRes.json();
 
                 if (saveRes.ok) {
+                    // Meta Pixel: Purchase — fired only after the server verified the payment and saved the order.
+                    // eventID = order ID, so the Conversions API can deduplicate it later.
+                    trackEvent(
+                        "Purchase",
+                        itemsPayload(checkoutData.cart, checkoutData.totals.finalTotal),
+                        result.orderId ? `order_${result.orderId}` : undefined
+                    );
                     toast.success("Order Placed Successfully!");
                     clearCart();
                     localStorage.removeItem("checkout_data");
@@ -86,6 +94,8 @@ export async function openRazorpay(
         };
 
         const rzp = new (window as any).Razorpay(options);
+        // Meta Pixel: AddPaymentInfo when the payment window opens
+        trackEvent("AddPaymentInfo", itemsPayload(checkoutData.cart, checkoutData.totals.finalTotal));
         rzp.open();
     } catch (error: any) {
         toast.error(error.message);

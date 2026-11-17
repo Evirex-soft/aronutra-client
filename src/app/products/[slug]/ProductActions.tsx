@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { trackEvent, itemsPayload } from "@/lib/metaPixel";
 import { Minus, Plus, Heart, ShoppingBag, ArrowRight } from "lucide-react";
 import { IProduct } from "@/types/product";
 import { useCart } from "@/app/contexts/CartContext";
@@ -26,6 +27,22 @@ export default function ProductActions({
     const router = useRouter();
     const { addToCart, cart } = useCart();
     const { toggleWishlist, isProductInWishlist } = useWishlist();
+
+    // Meta Pixel: ViewContent once per product / selected size
+    useEffect(() => {
+        trackEvent(
+            "ViewContent",
+            itemsPayload([{
+                _id: product._id,
+                sku: product.sku,
+                name: product.name,
+                sellingPrice: displayPrice,
+                quantity: 1,
+                selectedVariantId: activeVariant?._id,
+            }])
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [product._id, activeVariant?._id]);
 
     const isPackage = product.productType === "PACKAGE";
     const hasVariants = product.variants && product.variants.length > 0;
